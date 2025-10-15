@@ -1,72 +1,104 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
 body {
   font-family: Arial, sans-serif;
-  background-color: #e00000; /* Fundo vermelho igual ao primeiro código */
+  margin: 0;
+  background-color: #f9f9f9;
 }
 
-/* --- HEADER --- */
+/* Header */
 header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 10px 20px;
-  border: 1px solid #ccc;
   background-color: #fff;
-}
-
-/* Logo à esquerda */
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-right: auto; /* empurra os outros elementos */
+  border-bottom: 1px solid #ccc;
+  position: relative;
+  z-index: 1100;
 }
 
 .logo img {
-  height: 100px;
+  height: 50px;
 }
 
-/* Botões colados à direita */
 .nav-buttons {
   display: flex;
   gap: 15px;
-  margin-left: auto; /* empurra os botões para a direita */
 }
 
 .nav-buttons a {
-  background-color: #ff6b6b;
-  color: black;
   text-decoration: none;
+  color: black;
   padding: 8px 16px;
   border-radius: 20px;
-  font-weight: 500;
-  transition: 0.3s;
+  background-color: #ff6b6b;
+  transition: background-color 0.3s;
 }
 
 .nav-buttons a:hover {
   background-color: #ff4c4c;
 }
 
-/* Menu hamburguer depois dos botões */
 .menu-icon {
-  font-size: 50px;
+  display: block;
+  font-size: 35px;
   cursor: pointer;
-  margin-left: 20px; /* espaço entre botões e ícone */
 }
 
-/* --- CALENDÁRIO --- */
-.calendar {
-  width: 360px;
-  margin: 40px auto;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 15px;
+/* Side Menu */
+.side-menu {
+  position: fixed;
+  top: 0;
+  right: -250px;
+  width: 250px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
   padding: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: right 0.3s ease;
+  z-index: 1000;
+}
+
+.side-menu.active {
+  right: 0;
+}
+
+.side-menu a {
+  text-decoration: none;
+  color: black;
+  font-size: 1.1rem;
+  padding: 8px 10px;
+  border-radius: 20px;
+  background-color: #ff6b6b;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+.side-menu a:hover {
+  background-color: #ff4c4c;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .nav-buttons {
+    display: none;
+  }
+  .menu-icon {
+    display: block;
+  }
+}
+
+/* ----------- Estilo do Calendário ----------- */
+.calendar {
+  max-width: 400px;
+  margin: 40px auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
 }
 
 .calendar-header {
@@ -77,8 +109,8 @@ header {
 }
 
 .calendar-header h2 {
-  font-size: 18px;
-  text-transform: capitalize;
+  margin: 0;
+  color: #333;
 }
 
 .calendar-header button {
@@ -88,8 +120,7 @@ header {
   padding: 6px 12px;
   border-radius: 10px;
   cursor: pointer;
-  font-weight: bold;
-  transition: 0.3s;
+  transition: background-color 0.3s;
 }
 
 .calendar-header button:hover {
@@ -99,70 +130,71 @@ header {
 .calendar-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
+  gap: 8px;
 }
 
-.day {
-  text-align: center;
-  padding: 12px;
-  border-radius: 50%;
+.calendar-days div {
+  padding: 10px 0;
+  border-radius: 8px;
   cursor: pointer;
-  position: relative;
-  font-weight: 500;
-  transition: background 0.3s;
+  transition: background-color 0.3s;
 }
 
-.day:hover {
-  background-color: #f0f0f0;
-}
-
-/* Número dentro do dia */
-.day span {
-  position: relative;
-  z-index: 2;
-  color: black;
-  font-weight: bold;
-}
-
-/* Bolinha vermelha atrás do número */
-.day .marker {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 36px;
-  height: 36px;
+.calendar-days div:hover {
   background-color: #ff6b6b;
-  border-radius: 50%;
-  z-index: 1; 
-}
-
-.day.selected span {
   color: white;
 }
 
-/* --- SELEÇÃO DE OBJETIVO E HORÁRIO --- */
+.calendar-days .selected {
+  background-color: #ff4c4c;
+  color: white;
+}
+
+/* ----------- Estilo da seleção ----------- */
 .selection-container {
-  width: 360px;
-  margin: 20px auto;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
   display: flex;
   flex-direction: column;
+  width: 250px;
+  margin: 20px auto 60px auto;
   gap: 20px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 .selection-container label {
   font-weight: bold;
-  margin-bottom: 8px;
+  color: #333;
+  margin-bottom: 5px;
+  display: block;
 }
 
 .selection-container select {
-  padding: 8px 12px;
+  width: 100%;
+  padding: 8px;
   border-radius: 10px;
   border: 1px solid #ccc;
-  font-size: 16px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.selection-container select:focus {
+  border-color: #ff6b6b;
+  outline: none;
+}
+
+#agendar-btn {
+  background-color: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#agendar-btn:hover {
+  background-color: #ff4c4c;
 }
