@@ -1,0 +1,218 @@
+/* ====== SEÇÃO PERFIL DO ALUNO ====== */
+/* (Adicionar ao final do seu style.css original) */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #e00000; /* Fundo vermelho */
+    }
+
+    /* Header */
+    header {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      border: 1px solid #ccc;
+      background-color: #fff;
+    }
+
+    /* Logo à esquerda */
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-right: auto; /* empurra os outros elementos */
+    }
+
+    .logo img {
+      height: 100px;
+    }
+
+    /* Botões colados à direita */
+    .nav-buttons {
+      display: flex;
+      gap: 15px;
+      margin-left: auto; /* empurra os botões para a direita */
+    }
+
+    .nav-buttons a {
+      background-color: #ff6b6b;
+      color: black;
+      text-decoration: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 500;
+      transition: 0.3s;
+    }
+
+    .nav-buttons a:hover {
+      background-color: #ff4c4c;
+    }
+
+    /* Menu hamburguer depois dos botões */
+    .menu-icon {
+      font-size: 50px;
+      cursor: pointer;
+      margin-left: 20px; /* espaço entre botões e ícone */
+    }
+    
+    /* ====== SEÇÃO BANNER ====== */
+    .banner-container {
+        width: 100%;
+    }
+
+    .banner-img {
+        width: 80%;
+        display: block; /* Remove espaço extra abaixo da imagem */
+        margin: 0 auto; /* Centraliza a imagem */
+        border-radius: 30px;
+    }
+
+    /* ====== SEÇÃO PLANOS ====== */
+    .planos {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 40px 20px;
+      flex-wrap: wrap;
+    }
+
+    .card {
+      background-color: #7a0f0f;
+      border-radius: 15px;
+      padding: 20px;
+      width: 300px;
+      text-align: center;
+      box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+      color: white;
+    }
+
+    .card h2 {
+      margin-bottom: 15px;
+      font-size: 22px;
+      color: #fff;
+    }
+
+    .preco {
+      font-size: 18px;
+      margin: 10px 0;
+      color: #00ff6a;
+      font-weight: bold;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #c2a100;
+      color: black;
+      padding: 10px 20px;
+      border-radius: 20px;
+      text-decoration: none;
+      font-weight: bold;
+      margin-bottom: 20px;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #e5c100;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      text-align: left;
+    }
+
+    ul li {
+      margin: 8px 0;
+      font-size: 15px;
+    }
+
+    .ok {
+      color: #00ff6a;
+      font-weight: bold;
+    }
+
+    .no {
+      color: #ff4c4c;
+      font-weight: bold;
+    }
+  
+.profile-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px 20px;
+}
+
+.profile-card {
+  background-color: #7a0f0f;
+  border-radius: 15px;
+  padding: 30px;
+  width: 100%;
+  max-width: 700px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.3);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-pic {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #c2a100; /* Borda dourada */
+  margin-bottom: 15px;
+  background-color: #fff;
+}
+
+.profile-card h2 {
+  margin: 0;
+  font-size: 28px;
+  color: #fff;
+}
+
+.plano-ativo {
+  margin: 5px 0 30px 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #00ff6a; /* Cor verde de destaque */
+  text-transform: uppercase;
+}
+
+.profile-info {
+  width: 100%;
+  border-top: 1px solid #9a2f2f;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap; 
+  gap: 10px;
+  padding: 15px 10px;
+  font-size: 16px;
+  border-bottom: 1px solid #9a2f2f;
+}
+
+.info-row strong {
+  color: #f0f0f0;
+  font-weight: 600;
+}
+
+.info-row span {
+  color: #ddd;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+  flex-wrap: wrap; 
+}

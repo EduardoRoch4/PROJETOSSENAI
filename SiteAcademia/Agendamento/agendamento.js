@@ -76,3 +76,10 @@ agendarBtn.addEventListener("click", () => {
   const mes = monthName.textContent;
   alert(`✅ Agendamento realizado com sucesso!\n\n📅 Dia: ${selectedDay} de ${mes}\n🕒 Horário: ${horario}\n🎯 Objetivo: ${objetivo}`);
 });
+
+    const menuIcon = document.getElementById('menu-icon');
+    const sideMenu = document.getElementById('side-menu');
+
+    menuIcon.addEventListener('click', () => {
+      sideMenu.classList.toggle('active');
+    });
