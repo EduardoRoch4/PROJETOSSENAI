@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat | TechFit</title>
+  <link rel="stylesheet" href="chat.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="overlay" id="overlay"></div>
+
+ <!-- 🔴 HEADER PADRÃO -->
+<header>
+  <div class="logo">
+    <img src="/SiteAcademia/IMG/Logo.png" alt="Logo TechFit">
+  </div>
+
+  <!-- 🧭 Navegação principal -->
+  <nav class="nav-buttons" id="nav-buttons">
+    <a href="/SiteAcademia/Index e Login/index.html">Início</a>
+    <a href="/SiteAcademia/Agendamento/agendamento.html">Agendamento</a>
+    <a href="/SiteAcademia/Unidades/Unidades.html">Unidades</a>
+    <a href="/SiteAcademia/Chat/chat.html">Chat</a>
+    <a href="/SiteAcademia/Admin/painel.html">Painel Admin</a>
+    <a href="/SiteAcademia/Nossa História/nos.html">Sobre Nós</a>
+    <a href="/SiteAcademia/Usuario/usuario.html" id="perfil-btn" style="display:none;">Perfil</a>
+    <a href="/SiteAcademia/login.html" id="login-btn">Login</a>
+  </nav>
+
+  <div class="menu-icon" id="menu-icon">☰</div>
+</header>
+
+<!-- 🪟 MENU LATERAL -->
+<div class="side-menu" id="side-menu">
+  <div class="close-btn" id="close-btn">✖</div>
+  <a href="/SiteAcademia/Index e Login/index.html">Início</a>
+  <a href="/SiteAcademia/Agendamento/agendamento.html">Agendamento</a>
+  <a href="/SiteAcademia/Unidades/Unidades.html">Unidades</a>
+  <a href="/SiteAcademia/Chat/chat.html">Chat</a>
+  <a href="/SiteAcademia/Admin/painel.html">Painel Admin</a>
+  <a href="/SiteAcademia/Nossa História/nos.html">Sobre Nós</a>
+  <a href="/SiteAcademia/Usuario/usuario.html" id="perfil-side" style="display:none;">Perfil</a>
+  <a href="/SiteAcademia/login.html" id="login-side">Login</a>
+</div>
+
+<!-- ⚫ OVERLAY -->
+<div class="overlay" id="overlay"></div>
+
+  <!-- 💬 ÁREA DE CHAT -->
+  <main class="chat-container">
+    <h1>💬 Chat TechFit</h1>
+    <div class="chat-box" id="chat-box">
+      <div class="message system">Bem-vindo ao suporte TechFit! Como posso ajudar hoje?</div>
+    </div>
+
+    <div class="chat-input">
+      <input type="text" id="mensagem" placeholder="Digite sua mensagem...">
+      <button id="enviar">Enviar</button>
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 TechFit — Comunicação e suporte integrados</p>
+  </footer>
+
+  <script src="chat.js"></script>
+</body>
+</html>
