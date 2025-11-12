@@ -1,83 +1,142 @@
-body {
-  font-family: Arial, sans-serif;
+* {
   margin: 0;
-  background-color: #f9f9f9;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Header */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #fff;
+  color: #222;
+  overflow-x: hidden;
+}
+
 header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 20px;
-  background-color: #fff;
-  border-bottom: 1px solid #ccc;
-  position: relative;
-  z-index: 1100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(6px);
+  padding: 15px 40px;
+  border-bottom: 2px solid #d4af37;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
 .logo img {
-  height: 50px;
+  height: 60px;
+  transition: transform 0.3s ease;
+}
+.logo img:hover {
+  transform: scale(1.05);
 }
 
+/* ===== Navegação ===== */
 .nav-buttons {
   display: flex;
-  gap: 15px;
+  gap: 20px;
 }
 
 .nav-buttons a {
   text-decoration: none;
-  color: black;
-  padding: 8px 16px;
-  border-radius: 20px;
-  background-color: #ff6b6b;
-  transition: background-color 0.3s;
+  background: linear-gradient(90deg, #ff3b3b, #d40000);
+  color: #fff;
+  padding: 10px 22px;
+  border-radius: 25px;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
 .nav-buttons a:hover {
-  background-color: #ff4c4c;
+  background: linear-gradient(90deg, #d40000, #ff3b3b);
+  box-shadow: 0 0 10px rgba(255, 59, 59, 0.6);
 }
 
+/* ===== Ícone do menu lateral ===== */
 .menu-icon {
-  display: block;
-  font-size: 35px;
+  display: none;
+  font-size: 40px;
   cursor: pointer;
+  color: #b00;
 }
 
-/* Side Menu */
+/* ===== Overlay (fundo desfocado) ===== */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  z-index: 150;
+}
+.overlay.show {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* ===== Menu lateral ===== */
 .side-menu {
   position: fixed;
   top: 0;
-  right: -250px;
+  right: -270px;
   width: 250px;
   height: 100%;
-  background-color: #fff;
-  box-shadow: -3px 0 10px rgba(0, 0, 0, 0.2);
-  padding: 20px;
+  background: #fff;
+  box-shadow: -3px 0 10px rgba(0,0,0,0.3);
+  padding: 30px 20px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  transition: right 0.3s ease;
-  z-index: 1000;
+  gap: 20px;
+  transition: right 0.4s ease;
+  z-index: 200;
 }
 
 .side-menu.active {
   right: 0;
 }
 
-.side-menu a {
-  text-decoration: none;
-  color: black;
-  font-size: 1.1rem;
-  padding: 8px 10px;
-  border-radius: 20px;
-  background-color: #ff6b6b;
-  text-align: center;
-  transition: background-color 0.3s;
+/* ===== Botão de fechar ===== */
+.close-btn {
+  align-self: flex-end;
+  font-size: 25px;
+  cursor: pointer;
+  color: #d40000;
+  margin-bottom: 10px;
+  transition: 0.3s;
+}
+.close-btn:hover {
+  color: #ff3b3b;
+  transform: scale(1.2);
 }
 
+.side-menu a {
+  text-decoration: none;
+  background: #ff3b3b;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 20px;
+  text-align: center;
+  font-weight: 600;
+  transition: 0.3s;
+}
 .side-menu a:hover {
-  background-color: #ff4c4c;
+  background: #d40000;
+}
+
+/* ===================== RESPONSIVO (Header) ===================== */
+@media (max-width: 768px) {
+  .nav-buttons {
+    display: none;
+  }
+  .menu-icon {
+    display: block;
+  }
 }
 
 /* Responsivo */

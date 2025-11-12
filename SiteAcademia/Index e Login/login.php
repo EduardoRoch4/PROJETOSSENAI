@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['tipo']) && $_POST['ti
                 // Login bem-sucedido
                 $_SESSION['usuario'] = $dados['nome'];
                 $_SESSION['id_usuario'] = $dados['id_usuario'];
-                header("Location: ../Usuario/usuario.html");
+                header("/SiteAcademia/Alunos/usuario.php");
                 exit;
             } else {
                 $mensagem = "❌ Senha incorreta!";

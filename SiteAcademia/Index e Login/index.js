@@ -43,8 +43,8 @@ const menuIcon = document.getElementById('menu-icon');
       } else {
         loginBtn.textContent = 'Login';
         loginSide.textContent = 'Login';
-        loginBtn.href = 'login.html';
-        loginSide.href = 'login.html';
+        loginBtn.href = 'login.php';
+        loginSide.href = 'login.php';
         perfilBtn.style.display = 'none';
         perfilSide.style.display = 'none';
       }
