@@ -1,127 +1,114 @@
 CREATE DATABASE Techfit;
-
 USE Techfit;
 
-CREATE TABLE usuarios (
-nome VARCHAR(100) NOT NULL,
-email VARCHAR(100) NOT NULL,
-senha VARCHAR(255),
-perfil ENUM("aluno", "professor", "admin"),
-foto BLOB,
-id_usuario INT AUTO_INCREMENT PRIMARY KEY
-);
-
-CREATE TABLE avaliacoes_fisicas (
-data_avaliacao DATE,
-peso DECIMAL,
-altura DECIMAL,
-percentual_gordura DECIMAL,
-medidas TEXT,
-id_avaliacao INT AUTO_INCREMENT PRIMARY KEY,
-id_usuario INT,
-FOREIGN KEY(id_usuario) REFERENCES usuarios (id_usuario)
-);
-
-CREATE TABLE professor (
-id_professor INT AUTO_INCREMENT PRIMARY KEY,
-especialização VARCHAR(100),
-nome_professor VARCHAR(100)
-);
-
-CREATE TABLE funcionario (
-nome VARCHAR(100),
-cpf_funcionario VARCHAR(15),
-cargo VARCHAR(100),
-telefone VARCHAR(50),
-id_funcionario INT AUTO_INCREMENT PRIMARY KEY
-);
-
-CREATE TABLE Aulas (
-local_ VARCHAR(100),
-modalidade VARCHAR(100),
-lotacao_maxima INT,
-id_aula INT AUTO_INCREMENT PRIMARY KEY
-);
-
-CREATE TABLE mensagens (
-conteudo TEXT,
-data_envio DATETIME,
-id_mensagem INT AUTO_INCREMENT PRIMARY KEY
-);
-
-CREATE TABLE acessos (
-id_acesso INT AUTO_INCREMENT PRIMARY KEY,
-tempo_permanencia INT,
-data_hora DATETIME,
-id_usuario INT,
-FOREIGN KEY(id_usuario) REFERENCES usuarios (id_usuario)
-);
-
-CREATE TABLE agendamentos (
-id_agendamento INT AUTO_INCREMENT PRIMARY KEY,
-data_hora DATETIME,
-objetivo ENUM("Perda de peso", "Ganho de Massa", "Hipertrofia", "Saúde"),
-status_ ENUM("Confirmado"),
-id_aula INT,
-id_usuario INT,
-FOREIGN KEY(id_aula) REFERENCES Aulas (id_aula),
-FOREIGN KEY(id_usuario) REFERENCES usuarios (id_usuario)
-);
-
+-- 1️⃣ Perfis (precisa existir antes de usuários)
 CREATE TABLE perfis_acesso (
-nome_perfil VARCHAR(100),
-permissoes TEXT,
-id_perfil INT AUTO_INCREMENT PRIMARY KEY
+    id_perfil INT AUTO_INCREMENT PRIMARY KEY,
+    nome_perfil VARCHAR(100),
+    permissoes TEXT
 );
 
-CREATE TABLE       Envia_Mensagem	 (
-id_envia_mensagem INT AUTO_INCREMENT PRIMARY KEY,
-id_usuario INT,
-id_mensagem INT,
-FOREIGN KEY(id_usuario) REFERENCES usuarios (id_usuario),
-FOREIGN KEY(id_mensagem) REFERENCES mensagens (id_mensagem)
+-- 2️⃣ Aulas, Professor e Funcionário dependem entre si, então primeiro criamos Aulas sem FKs
+CREATE TABLE Aulas (
+    id_aula INT AUTO_INCREMENT PRIMARY KEY,
+    local_ VARCHAR(100),
+    modalidade VARCHAR(100),
+    lotacao_maxima INT
 );
 
-CREATE TABLE      Recebe_Mensagem	 (
-id_recebe_mensagem INT AUTO_INCREMENT PRIMARY KEY,
-id_usuario INT,
-id_mensagem INT,
-FOREIGN KEY(id_usuario) REFERENCES usuarios (id_usuario),
-FOREIGN KEY(id_mensagem) REFERENCES mensagens (id_mensagem)
+-- 3️⃣ Professores
+CREATE TABLE professor (
+    id_professor INT AUTO_INCREMENT PRIMARY KEY,
+    especializacao VARCHAR(100),
+    nome_professor VARCHAR(100),
+    id_aula INT,
+    FOREIGN KEY(id_aula) REFERENCES Aulas (id_aula)
 );
 
-CREATE TABLE Faz (
-id_faz INT AUTO_INCREMENT PRIMARY KEY,
-id_aula INT,
-id_professor INT,
-FOREIGN KEY(id_aula) REFERENCES Aulas (id_aula),
-FOREIGN KEY(id_professor) REFERENCES professor (id_professor)
+-- 4️⃣ Funcionários
+CREATE TABLE funcionario (
+    id_funcionario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100),
+    cpf_funcionario VARCHAR(15),
+    cargo VARCHAR(100),
+    telefone VARCHAR(50),
+    id_aula INT,
+    FOREIGN KEY(id_aula) REFERENCES Aulas (id_aula)
 );
 
-CREATE TABLE Agenda (
-id_agenda INT AUTO_INCREMENT PRIMARY KEY,
-id_aula INT,
-id_funcionario INT,
-FOREIGN KEY(id_aula) REFERENCES Aulas (id_aula),
-FOREIGN KEY(id_funcionario) REFERENCES funcionario (id_funcionario)
+-- 5️⃣ Agora atualizamos Aulas para incluir os relacionamentos com professor e funcionário
+ALTER TABLE Aulas
+ADD COLUMN id_professor INT,
+ADD COLUMN id_funcionario INT,
+ADD FOREIGN KEY (id_professor) REFERENCES professor(id_professor),
+ADD FOREIGN KEY (id_funcionario) REFERENCES funcionario(id_funcionario);
+
+-- 6️⃣ Usuários (agora perfis_acesso já existe)
+CREATE TABLE usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    senha VARCHAR(255),
+    perfil ENUM("aluno", "professor", "admin"),
+    foto BLOB,
+    id_perfil INT,
+    FOREIGN KEY (id_perfil) REFERENCES perfis_acesso(id_perfil)
 );
 
-CREATE TABLE    Possui_Perfil	 (
-id_possui_perfil INT AUTO_INCREMENT PRIMARY KEY,
-id_perfil INT,
-id_usuario INT,
-FOREIGN KEY(id_perfil) REFERENCES perfis_acesso (id_perfil),
-FOREIGN KEY(id_usuario) REFERENCES usuarios (id_usuario)
+-- 7️⃣ Mensagens (precisa que usuarios já exista)
+CREATE TABLE mensagens (
+    id_mensagem INT AUTO_INCREMENT PRIMARY KEY,
+    conteudo TEXT,
+    data_envio DATETIME,
+    id_usuario_remetente INT,
+    id_usuario_destinatario INT,
+    FOREIGN KEY (id_usuario_remetente) REFERENCES usuarios(id_usuario),
+    FOREIGN KEY (id_usuario_destinatario) REFERENCES usuarios(id_usuario)
 );
 
-CREATE TABLE    Ministra_Aula	 (
-id_ministra INT AUTO_INCREMENT PRIMARY KEY,
-id_aula INT,
-id_usuario INT,
-FOREIGN KEY(id_aula) REFERENCES Aulas (id_aula),
-FOREIGN KEY(id_usuario) REFERENCES usuarios (id_usuario)
+-- 8️⃣ Avaliações Físicas
+CREATE TABLE avaliacoes_fisicas (
+    id_avaliacao INT AUTO_INCREMENT PRIMARY KEY,
+    data_avaliacao DATE,
+    peso DECIMAL,
+    altura DECIMAL,
+    percentual_gordura DECIMAL,
+    medidas TEXT,
+    id_usuario INT,
+    FOREIGN KEY(id_usuario) REFERENCES usuarios (id_usuario)
 );
 
+-- 9️⃣ Acessos
+CREATE TABLE acessos (
+    id_acesso INT AUTO_INCREMENT PRIMARY KEY,
+    tempo_permanencia INT,
+    data_hora DATETIME,
+    id_usuario INT,
+    FOREIGN KEY(id_usuario) REFERENCES usuarios (id_usuario)
+);
+
+-- 🔟 Agendamentos
+CREATE TABLE agendamentos (
+    id_agendamento INT AUTO_INCREMENT PRIMARY KEY,
+    data_hora DATETIME,
+    objetivo ENUM("Perda de peso", "Ganho de Massa", "Hipertrofia", "Saúde"),
+    status_ ENUM("Confirmado"),
+    id_aula INT,
+    id_usuario INT,
+    FOREIGN KEY(id_aula) REFERENCES Aulas (id_aula),
+    FOREIGN KEY(id_usuario) REFERENCES usuarios (id_usuario)
+);
+
+
+CREATE TABLE pagamentos (
+    id_pagamento INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    plano ENUM('FIT', 'TECH', 'BLACK') NOT NULL,
+    valor DECIMAL(8,2) NOT NULL,
+    data_pagamento DATETIME DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('Pago', 'Pendente') DEFAULT 'Pendente',
+    FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
+);
 
 -- Dados de Usuários --
 INSERT INTO usuarios (nome, email, senha, perfil, foto) VALUES
@@ -156,7 +143,7 @@ SELECT * FROM avaliacoes_fisicas;
 
 
 -- Dados de professores --
-INSERT INTO professor (especialização, nome_professor) VALUES
+INSERT INTO professor (especializacao, nome_professor) VALUES
 ('Musculação', 'Marina Costa'),
 ('Yoga', 'Lucas Andrade'),
 ('Crossfit', 'Felipe Ramos'),
@@ -263,3 +250,11 @@ INSERT INTO perfis_acesso (nome_perfil, permissoes) VALUES
 ('Camila Torres', 'Acessar aulas, visualizar desempenho');
 
 SELECT * FROM perfis_acesso;
+
+INSERT INTO pagamentos (id_usuario, plano, valor, status) VALUES
+(1, 'FIT', 99.90, 'Pago'),
+(2, 'TECH', 119.90, 'Pago'),
+(3, 'BLACK', 149.90, 'Pendente'),
+(6, 'FIT', 99.90, 'Pago'),
+(8, 'TECH', 119.90, 'Pago'),
+(9, 'BLACK', 149.90, 'Pendente');

@@ -10,30 +10,37 @@
 
   <header>
     <div class="logo">
-      <img src="../IMG/Logo.png" alt="Logo techFit">
+      <img src="/SiteAcademia/IMG/Logo.png" alt="Logo TechFit">
     </div>
 
-    <nav class="nav-buttons">
-      <a href="../Index/index.html">Academia</a>
-      <a href="../Agendamento/Agendamento.html">Agendamento</a>
-      <a href="../Unidades/Unidades.html">Unidades</a>
+    <nav class="nav-buttons" id="nav-buttons">
+      <a href="/SiteAcademia/Index e Login/index.html">Início</a>
+      <a href="/SiteAcademia/Agendamento/agendamento.html">Agendamento</a>
+      <a href="/SiteAcademia/Unidades/Unidades.html">Unidades</a>
+      <a href="/SiteAcademia/Chat/chat.html">Chat</a>
+      <a href="/SiteAcademia/Admin/painel.html">Painel Admin</a>
+      <a href="/SiteAcademia/Nossa História/nos.html">Sobre Nós</a>
+      <a href="/SiteAcademia/Usuario/usuario.html" id="perfil-btn" style="display:none;">Perfil</a>
+      <a href="/SiteAcademia/login.html" id="login-btn">Login</a>
     </nav>
 
     <div class="menu-icon" id="menu-icon">☰</div>
   </header>
 
-  <!-- Menu lateral -->
   <div class="side-menu" id="side-menu">
-    <a href="../Index/index.html">Academia</a>
-    <a href="../Agendamento/Agendamento.html">Agendamento</a>
-    <a href="../Unidades/Unidades.html">Unidades</a>
-    <a href="#">Seja um Franqueado</a>
-    <a href="#">Tech Fit News</a>
-    <a href="#">Sustentabilidade</a>
-    <a href="#">Nossa História</a>
+    <div class="close-btn" id="close-btn">✖</div>
+    <a href="/SiteAcademia/Index e Login/index.html">Início</a>
+    <a href="/SiteAcademia/Agendamento/agendamento.html">Agendamento</a>
+    <a href="/SiteAcademia/Unidades/Unidades.html">Unidades</a>
+    <a href="/SiteAcademia/Chat/chat.html">Chat</a>
+    <a href="/SiteAcademia/Admin/painel.html">Painel Admin</a>
+    <a href="/SiteAcademia/Nossa História/nos.html">Sobre Nós</a>
+    <a href="/SiteAcademia/Usuario/usuario.html" id="perfil-side" style="display:none;">Perfil</a>
+    <a href="/SiteAcademia/login.html" id="login-side">Login</a>
   </div>
 
-  <!-- Calendário -->
+  <div class="overlay" id="overlay"></div>
+
   <div class="calendar">
     <div class="calendar-header">
       <button class="prev-month">&lt;</button>
@@ -43,7 +50,6 @@
     <div class="calendar-days"></div>
   </div>
 
-  <!-- Seleções -->
   <div class="selection-container">
     <div>
       <label for="time-select">Selecione o horário:</label>
@@ -73,7 +79,6 @@
       </select>
     </div>
 
-    <!-- Botão de agendamento -->
     <button id="agendar-btn">Agendar</button>
   </div>
 
