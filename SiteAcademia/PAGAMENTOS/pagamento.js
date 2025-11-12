@@ -65,5 +65,5 @@ Cliente: ${nome}
 Bem-vindo(a) à TechFit! 💪`);
 
   // Redireciona após confirmar
-  window.location.href = "/SiteAcademia/Usuario/usuario.html";
+  window.location.href = "/SiteAcademia/Usuario/usuario.php";
 });

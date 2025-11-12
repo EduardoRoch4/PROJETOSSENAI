@@ -11,8 +11,8 @@
     <a href="/SiteAcademia/Chat/chat.html">Chat</a>
     <a href="/SiteAcademia/Admin/painel.html">Painel Admin</a>
     <a href="/SiteAcademia/Nossa História/nos.html">Sobre Nós</a>
-    <a href="/SiteAcademia/Usuario/usuario.html" id="perfil-btn" style="display:none;">Perfil</a>
-    <a href="/SiteAcademia/Index e Login/login.html" id="login-btn">Login</a>
+    <a href="/SiteAcademia/Usuario/usuario.php" id="perfil-btn" style="display:none;">Perfil</a>
+    <a href="/SiteAcademia/Login/login.php" id="login-btn">Login</a>
   </nav>
 
   <div class="menu-icon" id="menu-icon">☰</div>
@@ -25,8 +25,8 @@
   <a href="/SiteAcademia/Chat/chat.html">Chat</a>
   <a href="/SiteAcademia/Admin/painel.html">Painel Admin</a>
   <a href="/SiteAcademia/Nossa História/nos.html">Sobre Nós</a>
-  <a href="/SiteAcademia/Usuario/usuario.html" id="perfil-side" style="display:none;">Perfil</a>
-  <a href="/SiteAcademia/Index e Login/login.html" id="login-side">Login</a>
+  <a href="/SiteAcademia/Usuario/usuario.php" id="perfil-side" style="display:none;">Perfil</a>
+  <a href="/SiteAcademia/Login/login.php" id="login-side">Login</a>
 </div>
 
 MENU LATERAL: 
@@ -38,6 +38,6 @@ MENU LATERAL:
     <a href="/SiteAcademia/Chat/chat.html">Chat</a>
     <a href="/SiteAcademia/Admin/painel.html">Painel Admin</a>
     <a href="/SiteAcademia/Nossa História/nos.html">Sobre Nós</a>
-    <a href="/SiteAcademia/Usuario/usuario.html" id="perfil-side" style="display:none;">Perfil</a>
-    <a href="/SiteAcademia/Index e Login/login.html" id="login-side">Login</a>
+    <a href="/SiteAcademia/Usuario/usuario.php" id="perfil-side" style="display:none;">Perfil</a>
+    <a href="/SiteAcademia/Login/login.php" id="login-side">Login</a>
   </div>

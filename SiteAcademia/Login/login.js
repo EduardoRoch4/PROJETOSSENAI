@@ -45,12 +45,12 @@ const formLogin = document.getElementById('form-login');
       if (usuario === userCadastrado && senha === senhaCadastrada) {
         localStorage.setItem('usuarioLogado', 'true');
         localStorage.setItem('usuarioNome', usuario);
-        window.location.href = '/SiteAcademia/Index e Login/index.html';
+        window.location.href = '../index.html';
       } else {
         msg.textContent = 'Usuário ou senha incorretos.';
         msg.style.color = 'red';
       }
     });
 
-    document.getElementById('btn-voltar').addEventListener('click', () => window.location.href = 'index.html');
-    document.getElementById('btn-voltar2').addEventListener('click', () => window.location.href = 'index.html');
+    document.getElementById('btn-voltar').addEventListener('click', () => window.location.href = '../index.html');
+    document.getElementById('btn-voltar2').addEventListener('click', () => window.location.href = '../index.html');

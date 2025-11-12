@@ -58,7 +58,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['tipo']) && $_POST['ti
                 // Login bem-sucedido
                 $_SESSION['usuario'] = $dados['nome'];
                 $_SESSION['id_usuario'] = $dados['id_usuario'];
-                header("Location: ../Usuario/usuario.html");
+
+                // Redireciona para usuario.php
+                header("Location: /Alunos/usuario.php");
                 exit;
             } else {
                 $mensagem = "❌ Senha incorreta!";
@@ -81,7 +83,7 @@ $conn->close();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login | TechFit</title>
-  <link rel="stylesheet" href="login.css">
+  <link rel="stylesheet" type="text/css" href="../Login/login.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -100,7 +102,6 @@ $conn->close();
           <input type="password" name="senha" id="login-senha" placeholder="Senha" required>
           <button type="submit" id="btn-login">Entrar</button>
         </form>
-        <button id="btn-voltar" class="btn-voltar">⬅ Voltar</button>
         <p>Não tem conta? <a href="#" id="mostrar-cadastro">Cadastre-se</a></p>
       </div>
 
@@ -112,7 +113,6 @@ $conn->close();
           <input type="password" name="senha" id="cadastro-senha" placeholder="Crie uma senha" required>
           <button type="submit" id="btn-cadastrar">Cadastrar</button>
         </form>
-        <button id="btn-voltar2" class="btn-voltar">⬅ Voltar</button>
         <p>Já tem conta? <a href="#" id="mostrar-login">Voltar ao login</a></p>
       </div>
     </div>
@@ -122,15 +122,13 @@ $conn->close();
     // Alternar entre Login e Cadastro
     const formLogin = document.getElementById('form-login');
     const formCadastro = document.getElementById('form-cadastro');
+
     document.getElementById('mostrar-cadastro').onclick = () => {
       formLogin.style.display = 'none';
       formCadastro.style.display = 'block';
     };
+
     document.getElementById('mostrar-login').onclick = () => {
-      formCadastro.style.display = 'none';
-      formLogin.style.display = 'block';
-    };
-    document.getElementById('btn-voltar2').onclick = () => {
       formCadastro.style.display = 'none';
       formLogin.style.display = 'block';
     };

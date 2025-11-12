@@ -40,18 +40,18 @@ $conn->close();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pagamento | TechFit</title>
-  <link rel="stylesheet" href="pagamentos.css">
+  <link rel="stylesheet" type = "text/css" href="../PAGAMENTOS/pagamentos.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
   <header>
     <div class="logo">
-      <img src="/SiteAcademia/IMG/Logo.png" alt="Logo TechFit">
+      <img src="../IMG/Logo.png" alt="Logo TechFit">
     </div>
 
     <nav class="nav-buttons">
-      <a href="../Index e Login/index.html">Início</a>
+      <a href="../index.html">Início</a>
       <a href="../Unidades/Unidades.html">Unidades</a>
       <a href="../Chat/chat.html">Chat</a>
       <a href="../Admin/painel.html">Painel Admin</a>
@@ -120,7 +120,7 @@ $conn->close();
     document.querySelector('.pagamento-form').addEventListener('submit', function(e) {
       e.preventDefault();
       alert("✅ Pagamento confirmado com sucesso!\nBem-vindo(a) à TechFit!");
-      window.location.href = "../Alunos/usuario.html";
+      window.location.href = "../Alunos/usuario.php";
     });
   </script>
 </body>
