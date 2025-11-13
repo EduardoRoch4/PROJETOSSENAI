@@ -257,3 +257,24 @@ header {
 #agendar-btn:hover {
   background-color: #ff4c4c;
 }
+
+/* ===================== FOOTER ===================== */
+footer {
+  background: #b30000;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+}
+
+/* ===================== ANIMAÇÕES ===================== */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s ease-out;
+}
+/* Você provavelmente tem um JS que adiciona a classe .visible */
+.fade-in-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

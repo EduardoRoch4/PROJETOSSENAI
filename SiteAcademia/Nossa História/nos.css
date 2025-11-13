@@ -186,18 +186,16 @@ footer {
   text-align: center;
   padding: 15px;
   font-size: 14px;
-  margin-top: 60px;
-  border-top: 2px solid #d4af37;
 }
 
-/* ===================== ANIMAÇÕES SUAVES ===================== */
-.fade-in {
+/* ===================== ANIMAÇÕES ===================== */
+.fade-in-up {
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: translateY(50px);
+  transition: all 0.8s ease-out;
 }
-
-.fade-in.visible {
+/* Você provavelmente tem um JS que adiciona a classe .visible */
+.fade-in-up.visible {
   opacity: 1;
   transform: translateY(0);
 }

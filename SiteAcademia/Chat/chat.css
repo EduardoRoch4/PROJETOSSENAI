@@ -254,3 +254,60 @@ header {
     display: block;
   }
 }
+
+/* ===================== FOOTER ===================== */
+footer {
+  background: #b30000;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  font-size: 14px;
+}
+
+/* ===================== ANIMAÇÕES ===================== */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: all 0.8s ease-out;
+}
+/* Você provavelmente tem um JS que adiciona a classe .visible */
+.fade-in-up.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ... (Todo o seu CSS anterior permanece igual) ... */
+
+.chat-input button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(212,175,55,0.7);
+}
+
+/* 🟢 ADICIONADO: Estilos para perguntas rápidas 🟢 */
+.quick-replies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 15px;
+  justify-content: center; /* Centraliza os botões */
+}
+
+.quick-reply {
+  background: #f0f0f0;
+  border: 1px solid #d4af37;
+  color: #b30000;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.quick-reply:hover {
+  background: #d4af37;
+  color: #000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+/* 🟢 FIM DA ADIÇÃO 🟢 */
