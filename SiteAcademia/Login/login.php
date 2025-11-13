@@ -77,6 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['tipo']) && $_POST['ti
 $conn->close();
 ?>
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>

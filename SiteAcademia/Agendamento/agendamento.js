@@ -12,7 +12,7 @@ let selectedDay = null;
 // -------------------- FUNÇÃO DO CALENDÁRIO --------------------
 function renderCalendar(date) {
   const year = date.getFullYear();
-  const month = date.getMonth();
+  const month = date.getMonth(); // 0 (Jan) a 11 (Dez)
 
   const monthNames = [
     "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
@@ -34,18 +34,11 @@ function renderCalendar(date) {
       // Remove seleção anterior
       document.querySelectorAll(".day.selected").forEach(d => {
         d.classList.remove("selected");
-        const oldMarker = d.querySelector(".marker");
-        if (oldMarker) oldMarker.remove();
       });
 
       // Marca o novo dia
       day.classList.add("selected");
-      const marker = document.createElement("div");
-      marker.classList.add("marker");
-      day.appendChild(marker);
-
-      // Guarda o dia selecionado
-      selectedDay = i;
+      selectedDay = i; // Armazena o dia (número)
     });
   }
 }
@@ -63,23 +56,73 @@ nextBtn.addEventListener("click", () => {
 
 renderCalendar(currentDate);
 
-// -------------------- BOTÃO AGENDAR --------------------
-agendarBtn.addEventListener("click", () => {
+// -------------------- BOTÃO AGENDAR (MODIFICADO) --------------------
+agendarBtn.addEventListener("click", async () => {
   const horario = timeSelect.value;
   const objetivo = goalSelect.value;
 
+  // 1. Validação no front-end
   if (!selectedDay || !horario || !objetivo) {
     alert("⚠️ Por favor, selecione o dia, o horário e o objetivo antes de agendar!");
     return;
   }
 
-  const mes = monthName.textContent;
-  alert(`✅ Agendamento realizado com sucesso!\n\n📅 Dia: ${selectedDay} de ${mes}\n🕒 Horário: ${horario}\n🎯 Objetivo: ${objetivo}`);
+  // 2. Preparar dados para enviar
+  const dadosAgendamento = {
+    dia: selectedDay,
+    mes: currentDate.getMonth() + 1, // JS (0-11) -> PHP (1-12)
+    ano: currentDate.getFullYear(),
+    horario: horario,
+    objetivo: objetivo
+  };
+
+  // 3. Enviar dados para o PHP (processar_agendamento.php)
+  try {
+    const response = await fetch('processar_agendamento.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dadosAgendamento)
+    });
+
+    const resultado = await response.json();
+
+    // 4. Mostrar a resposta do PHP (seja sucesso ou erro)
+    alert(resultado.message);
+
+    if (resultado.status === 'success') {
+      // Opcional: limpar seleção após sucesso
+      selectedDay = null;
+      timeSelect.value = "";
+      goalSelect.value = "";
+      renderCalendar(currentDate);
+    }
+
+  } catch (error) {
+    console.error("Erro no fetch:", error);
+    alert("❌ Ocorreu um erro ao enviar sua solicitação.");
+  }
 });
 
-    const menuIcon = document.getElementById('menu-icon');
-    const sideMenu = document.getElementById('side-menu');
+// -------------------- LÓGICA DO MENU HAMBÚRGUER --------------------
+// (Esta parte estava no seu JS original, mas com um erro de sintaxe)
+const menuIcon = document.getElementById('menu-icon');
+const sideMenu = document.getElementById('side-menu');
+const closeBtn = document.getElementById('close-btn'); // Adicionado
+const overlay = document.getElementById('overlay');     // Adicionado
 
-    menuIcon.addEventListener('click', () => {
-      sideMenu.classList.toggle('active');
-    });
+menuIcon.addEventListener('click', () => {
+  sideMenu.classList.add('active');
+  overlay.style.display = 'block'; // Mostra o overlay
+});
+
+closeBtn.addEventListener('click', () => {
+  sideMenu.classList.remove('active');
+  overlay.style.display = 'none'; // Esconde o overlay
+});
+
+overlay.addEventListener('click', () => {
+  sideMenu.classList.remove('active');
+  overlay.style.display = 'none'; // Esconde o overlay
+});
