@@ -4,8 +4,8 @@ session_start(); // Inicia a sessão
 // 1. VERIFICAÇÃO DE LOGIN
 // Se o usuário não estiver logado, redireciona para o login
 if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['usuario'])) {
-    // Ajuste o caminho se necessário, baseado na estrutura de pastas
-    header("Location: /SiteAcademia/Index e Login/login.php"); 
+  // Ajuste o caminho se necessário, baseado na estrutura de pastas
+  header("Location: /Login/login.php");
     exit;
 }
 
@@ -24,19 +24,19 @@ $id_usuario_logado = $_SESSION['id_usuario'];
 
   <header>
     <div class="logo">
-      <img src="/SiteAcademia/IMG/Logo.png" alt="Logo TechFit">
+      <img src="/IMG/Logo.png" alt="Logo TechFit">
     </div>
 
     <nav class="nav-buttons" id="nav-buttons">
-      <a href="/SiteAcademia/Index e Login/index.html">Início</a>
-      <a href="/SiteAcademia/Agendamento/agendamento.php">Agendamento</a>
-      <a href="/SiteAcademia/Unidades/Unidades.html">Unidades</a>
-      <a href="/SiteAcademia/Chat/chat.html">Chat</a>
-      <a href="/SiteAcademia/Admin/painel.html">Painel Admin</a>
-      <a href="/SiteAcademia/Nossa História/nos.html">Sobre Nós</a>
+      <a href="/index.html">Início</a>
+      <a href="/Agendamento/agendamento.php">Agendamento</a>
+      <a href="/Unidades/Unidades.html">Unidades</a>
+      <a href="/Chat/chat.html">Chat</a>
+      <a href="/Admin/painel.php">Painel Admin</a>
+      <a href="/Nossa História/nos.html">Sobre Nós</a>
       
-      <a href="/SiteAcademia/Usuario/usuario.php" id="perfil-btn">Perfil</a>
-      <a href="/SiteAcademia/Usuario/usuario.php?acao=logout" id="logout-btn">Logout</a>
+      <a href="/Alunos/usuario.php" id="perfil-btn">Perfil</a>
+      <a href="/Alunos/usuario.php?acao=logout" id="logout-btn">Logout</a>
     </nav>
 
     <div class="menu-icon" id="menu-icon">☰</div>
@@ -44,15 +44,15 @@ $id_usuario_logado = $_SESSION['id_usuario'];
 
   <div class="side-menu" id="side-menu">
     <div class="close-btn" id="close-btn">✖</div>
-    <a href="/SiteAcademia/Index e Login/index.html">Início</a>
-    <a href="/SiteAcademia/Agendamento/agendamento.php">Agendamento</a>
-    <a href="/SiteAcademia/Unidades/Unidades.html">Unidades</a>
-    <a href="/SiteAcademia/Chat/chat.html">Chat</a>
-    <a href="/SiteAcademia/Admin/painel.html">Painel Admin</a>
-    <a href="/SiteAcademia/Nossa História/nos.html">Sobre Nós</a>
+    <a href="/index.html">Início</a>
+    <a href="/Agendamento/agendamento.php">Agendamento</a>
+    <a href="/Unidades/Unidades.html">Unidades</a>
+    <a href="/Chat/chat.html">Chat</a>
+    <a href="/Admin/painel.php">Painel Admin</a>
+    <a href="/Nossa História/nos.html">Sobre Nós</a>
     
-    <a href="/SiteAcademia/Usuario/usuario.php" id="perfil-side">Perfil</a>
-    <a href="/SiteAcademia/Usuario/usuario.php?acao=logout" id="logout-side">Logout</a>
+    <a href="/Alunos/usuario.php" id="perfil-side">Perfil</a>
+    <a href="/Alunos/usuario.php?acao=logout" id="logout-side">Logout</a>
   </div>
 
   <div class="overlay" id="overlay"></div>
@@ -92,6 +92,18 @@ $id_usuario_logado = $_SESSION['id_usuario'];
         <option value="Ganho de Massa">Ganho de massa</option>
         <option value="Hipertrofia">Hipertrofia</option>
         <option value="Saúde">Saúde</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="modalidade-select">Selecione a modalidade:</label>
+      <select id="modalidade-select" name="modalidade">
+        <option value="">Escolha</option>
+        <option value="Musculação">Musculação</option>
+        <option value="Spinning">Spinning</option>
+        <option value="Yoga">Yoga</option>
+        <option value="Funcional">Funcional</option>
+        <option value="Pilates">Pilates</option>
       </select>
     </div>
 

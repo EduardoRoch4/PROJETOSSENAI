@@ -5,6 +5,7 @@ const nextBtn = document.querySelector(".next-month");
 const agendarBtn = document.getElementById("agendar-btn");
 const timeSelect = document.getElementById("time-select");
 const goalSelect = document.getElementById("goal-select");
+const modalidadeSelect = document.getElementById("modalidade-select");
 
 let currentDate = new Date();
 let selectedDay = null;
@@ -60,10 +61,11 @@ renderCalendar(currentDate);
 agendarBtn.addEventListener("click", async () => {
   const horario = timeSelect.value;
   const objetivo = goalSelect.value;
+  const modalidade = modalidadeSelect ? modalidadeSelect.value : '';
 
   // 1. Validação no front-end
-  if (!selectedDay || !horario || !objetivo) {
-    alert("⚠️ Por favor, selecione o dia, o horário e o objetivo antes de agendar!");
+  if (!selectedDay || !horario || !objetivo || !modalidade) {
+    alert("⚠️ Por favor, selecione o dia, o horário, o objetivo e a modalidade antes de agendar!");
     return;
   }
 
@@ -74,6 +76,7 @@ agendarBtn.addEventListener("click", async () => {
     ano: currentDate.getFullYear(),
     horario: horario,
     objetivo: objetivo
+    ,modalidade: modalidade
   };
 
   // 3. Enviar dados para o PHP (processar_agendamento.php)
@@ -86,22 +89,32 @@ agendarBtn.addEventListener("click", async () => {
       body: JSON.stringify(dadosAgendamento)
     });
 
-    const resultado = await response.json();
+    const text = await response.text();
+    // Tentar interpretar como JSON; se não for JSON, mostrar o texto bruto para depuração
+    let resultado;
+    try {
+      resultado = JSON.parse(text);
+    } catch (parseError) {
+      console.error('Resposta do servidor (não JSON):', text);
+      alert('❌ Resposta inválida do servidor. Veja console para mais detalhes.\nResposta bruta:\n' + text);
+      return;
+    }
 
     // 4. Mostrar a resposta do PHP (seja sucesso ou erro)
-    alert(resultado.message);
+    alert(resultado.message || ('Servidor retornou: ' + text));
 
     if (resultado.status === 'success') {
       // Opcional: limpar seleção após sucesso
       selectedDay = null;
       timeSelect.value = "";
       goalSelect.value = "";
+      modalidadeSelect.value = "";
       renderCalendar(currentDate);
     }
 
   } catch (error) {
     console.error("Erro no fetch:", error);
-    alert("❌ Ocorreu um erro ao enviar sua solicitação.");
+    alert("❌ Ocorreu um erro ao enviar sua solicitação. Verifique o console para mais detalhes.\n" + (error && error.message ? error.message : ''));
   }
 });
 

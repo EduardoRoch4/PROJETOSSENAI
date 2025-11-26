@@ -54,7 +54,7 @@ $conn->close();
       <a href="../index.html">Início</a>
       <a href="../Unidades/Unidades.html">Unidades</a>
       <a href="../Chat/chat.html">Chat</a>
-      <a href="../Admin/painel.html">Painel Admin</a>
+      <a href="../Admin/painel.php">Painel Admin</a>
       <a href="../Nossa História/nos.html">Sobre Nós</a>
     </nav>
   </header>
@@ -120,7 +120,7 @@ $conn->close();
     document.querySelector('.pagamento-form').addEventListener('submit', function(e) {
       e.preventDefault();
       alert("✅ Pagamento confirmado com sucesso!\nBem-vindo(a) à TechFit!");
-      window.location.href = "../Alunos/usuario.php";
+      window.location.href = "/Alunos/usuario.php";
     });
   </script>
 </body>

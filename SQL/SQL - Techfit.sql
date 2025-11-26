@@ -92,6 +92,7 @@ CREATE TABLE agendamentos (
     id_agendamento INT AUTO_INCREMENT PRIMARY KEY,
     data_hora DATETIME,
     objetivo ENUM("Perda de peso", "Ganho de Massa", "Hipertrofia", "Saúde"),
+    modalidade VARCHAR(100) DEFAULT NULL,
     status_ ENUM("Confirmado"),
     id_aula INT,
     id_usuario INT,

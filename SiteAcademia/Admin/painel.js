@@ -92,3 +92,68 @@ const fadeElements = document.querySelectorAll('.fade-in-up');
       });
     }, { threshold: 0.2 });
     fadeElements.forEach(el => observer.observe(el));
+
+// --- CARREGAR DADOS DO DASHBOARD ---
+async function loadDashboard() {
+  try {
+    const res = await fetch('get_dashboard_data.php');
+    const json = await res.json();
+    if (!json || json.status !== 'ok') {
+      console.error('Erro ao carregar dados do dashboard:', json);
+      document.getElementById('recent-note').textContent = 'Não foi possível carregar os dados.';
+      return;
+    }
+
+    const d = json.data || {};
+    document.getElementById('count-users').textContent = d.total_usuarios ?? '—';
+    document.getElementById('count-teachers').textContent = d.total_professores ?? '—';
+    document.getElementById('count-bookings').textContent = d.total_agendamentos ?? '—';
+    document.getElementById('count-upcoming').textContent = d.agendamentos_futuros ?? '—';
+
+    const tbody = document.getElementById('recent-table-body');
+    tbody.innerHTML = '';
+    const recent = d.recent_agendamentos || [];
+    if (recent.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" class="muted">Nenhum registro encontrado</td></tr>';
+      document.getElementById('recent-note').textContent = 'Sem registros recentes.';
+    } else {
+      document.getElementById('recent-note').textContent = recent.length + ' registros mostrados';
+      recent.forEach(r => {
+        const tr = document.createElement('tr');
+        const date = new Date(r.data_hora);
+        const dt = isNaN(date) ? r.data_hora : date.toLocaleString('pt-BR', {dateStyle: 'short', timeStyle: 'short'});
+        tr.innerHTML = `
+          <td>${dt}</td>
+          <td>${r.usuario ?? '—'}</td>
+          <td>${r.objetivo ?? '—'}</td>
+          <td>${r.modalidade ?? '—'}</td>
+          <td>${r.status_ ?? '—'}</td>
+        `;
+        tr.addEventListener('click', () => {
+          abrirModalDetalhes(r);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+  } catch (err) {
+    console.error('Erro fetch dashboard:', err);
+    document.getElementById('recent-note').textContent = 'Erro ao carregar dados (ver console).';
+  }
+}
+
+// abrir modal com detalhes de agendamento
+function abrirModalDetalhes(row) {
+  titulo.textContent = 'Detalhes do Agendamento';
+  texto.innerHTML = `
+    <p><strong>Data / Hora:</strong> ${new Date(row.data_hora).toLocaleString('pt-BR')}</p>
+    <p><strong>Usuário:</strong> ${row.usuario ?? '—'}</p>
+    <p><strong>Objetivo:</strong> ${row.objetivo ?? '—'}</p>
+    <p><strong>Modalidade:</strong> ${row.modalidade ?? '—'}</p>
+    <p><strong>Status:</strong> ${row.status_ ?? '—'}</p>
+  `;
+  modal.style.display = 'flex';
+}
+
+ // Carrega dados ao abrir a página
+loadDashboard();

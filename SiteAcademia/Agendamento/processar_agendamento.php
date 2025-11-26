@@ -21,10 +21,11 @@ $mes = $data['mes'] ?? null; // 1-12
 $ano = $data['ano'] ?? null;
 $horario = $data['horario'] ?? null; // "08:00"
 $objetivo = $data['objetivo'] ?? null; // "Perda de peso"
+$modalidade = $data['modalidade'] ?? null; // "Musculação"
 
 // 3. VALIDAR DADOS
-if (empty($dia) || empty($mes) || empty($ano) || empty($horario) || empty($objetivo)) {
-    $response['message'] = '⚠️ Por favor, preencha todos os campos.';
+if (empty($dia) || empty($mes) || empty($ano) || empty($horario) || empty($objetivo) || empty($modalidade)) {
+    $response['message'] = '⚠️ Por favor, preencha todos os campos (incluindo modalidade).';
     echo json_encode($response);
     exit;
 }
@@ -57,17 +58,52 @@ if ($conn->connect_error) {
 }
 
 // Usamos 1 como placeholder para id_aula, já que não é selecionado
-$id_aula_placeholder = 1; 
-$status_confirmado = "Confirmado"; //
+$id_aula_placeholder = 1;
+$status_confirmado = "Confirmado";
 
-$stmt = $conn->prepare("INSERT INTO agendamentos (data_hora, objetivo, status_, id_aula, id_usuario) VALUES (?, ?, ?, ?, ?)");
-$stmt->bind_param("sssii", $data_hora_sql, $objetivo, $status_confirmado, $id_aula_placeholder, $id_usuario);
+// 5.1 — Verificar se a coluna 'modalidade' existe (para armazenar separadamente)
+$stmt_check = $conn->prepare("SELECT COUNT(*) FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'agendamentos' AND COLUMN_NAME = 'modalidade'");
+$stmt_check->bind_param('s', $db);
+$stmt_check->execute();
+$res = $stmt_check->get_result()->fetch_row();
+$has_modalidade_col = (isset($res[0]) && intval($res[0]) > 0);
+$stmt_check->close();
 
-if ($stmt->execute()) {
-    $response['status'] = 'success';
-    $response['message'] = '✅ Agendamento realizado com sucesso!';
+if ($has_modalidade_col) {
+    // Insere com coluna modalidade separada
+    $stmt = $conn->prepare("INSERT INTO agendamentos (data_hora, objetivo, modalidade, status_, id_aula, id_usuario) VALUES (?, ?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        $response['message'] = '❌ Erro ao preparar a query: ' . $conn->error;
+        echo json_encode($response);
+        exit;
+    }
+    $stmt->bind_param("ssssii", $data_hora_sql, $objetivo, $modalidade, $status_confirmado, $id_aula_placeholder, $id_usuario);
 } else {
-    $response['message'] = '❌ Erro ao salvar no banco: ' . $stmt->error;
+    // Se não existe coluna modalidade, NÃO anexamos a modalidade ao ENUM objetivo — isso quebra o enum
+    // Em vez disso, armazenamos apenas o objetivo válido (pois o ENUM não aceita valores concatenados)
+    $stmt = $conn->prepare("INSERT INTO agendamentos (data_hora, objetivo, status_, id_aula, id_usuario) VALUES (?, ?, ?, ?, ?)");
+    if (!$stmt) {
+        $response['message'] = '❌ Erro ao preparar a query: ' . $conn->error;
+        echo json_encode($response);
+        exit;
+    }
+    $stmt->bind_param("sssii", $data_hora_sql, $objetivo, $status_confirmado, $id_aula_placeholder, $id_usuario);
+}
+
+try {
+    if ($stmt->execute()) {
+        $response['status'] = 'success';
+        $response['message'] = '✅ Agendamento realizado com sucesso!';
+        // If the table doesn't have a modalidade column, let caller know it wasn't saved
+        if (!$has_modalidade_col) {
+            $response['message'] .= ' (Observação: modalidade não foi gravada — tabela não possui coluna `modalidade`).';
+        }
+    } else {
+        $response['message'] = '❌ Erro ao salvar no banco: ' . $stmt->error;
+    }
+} catch (mysqli_sql_exception $ex) {
+    // Evita que a aplicação quebre com stack traces — retornamos JSON limpo com a mensagem
+    $response['message'] = '❌ Exceção ao salvar no banco: ' . $ex->getMessage();
 }
 
 $stmt->close();

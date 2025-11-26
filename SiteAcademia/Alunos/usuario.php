@@ -8,14 +8,14 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'logout') {
     session_destroy();   // Destrói a sessão
     
     // Redireciona para o login (caminho baseado no seu usuario.js)
-    header("Location: ../Index e Login/login.php"); 
+    header("Location: /Login/login.php");
     exit;
 }
 
 // 2. VERIFICAÇÃO DE LOGIN
 // Se não houver uma sessão ativa, manda o usuário para a página de login
 if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['usuario'])) {
-    header("Location: ../Index e Login/login.php");
+  header("Location: /Login/login.php");
     exit;
 }
 
@@ -70,6 +70,24 @@ if ($resultado_pag->num_rows > 0) {
     }
 }
 $stmt_pag->close();
+
+// Busca agendamentos do usuário (se a tabela existir)
+$agendamentos = [];
+// Protege caso o banco não possua a tabela (ex.: ambiente sem migração)
+$check_table = $conn->query("SHOW TABLES LIKE 'agendamentos'");
+if ($check_table && $check_table->num_rows > 0) {
+  $stmt_ag = $conn->prepare("SELECT id_agendamento, data_hora, objetivo, modalidade, status_ FROM agendamentos WHERE id_usuario = ? ORDER BY data_hora DESC LIMIT 50");
+  if ($stmt_ag) {
+    $stmt_ag->bind_param("i", $id_usuario);
+    $stmt_ag->execute();
+    $res_ag = $stmt_ag->get_result();
+    while ($row = $res_ag->fetch_assoc()) {
+      $agendamentos[] = $row;
+    }
+    $stmt_ag->close();
+  }
+}
+
 $conn->close();
 
 // Formata o ID de usuário como matrícula
@@ -82,7 +100,7 @@ $matricula = '#' . str_pad($id_usuario, 6, '0', STR_PAD_LEFT);
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meu Perfil | TechFit</title>
-  <link rel="stylesheet" href="usuario.css">
+  <link rel="stylesheet" href="./usuario.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -94,9 +112,9 @@ $matricula = '#' . str_pad($id_usuario, 6, '0', STR_PAD_LEFT);
     <nav class="nav-buttons">
       <a href="../Agendamento/agendamento.html">Agendamento</a>
       <a href="../Unidades/Unidades.html">Unidades</a>
-      <a href="/SiteAcademia/Nossa História/nos.html">Sobre Nós</a>
+      <a href="../Nossa História/nos.html">Sobre Nós</a>
       
-      <a href="usuario.php?acao=logout" id="logout">Logout</a>
+      <a href="usuario?acao=logout" id="logout">Logout</a>
     </nav>
   </header>
 
@@ -118,12 +136,44 @@ $matricula = '#' . str_pad($id_usuario, 6, '0', STR_PAD_LEFT);
       </div>
       <div class="profile-actions">
         <a href="#" class="btn">Editar Perfil</a>
-        <a href="../Agendamento/agendamento.html" class="btn">Agendamentos</a>
+        <a href="../Agendamento/Agendamento.html" class="btn">Agendamentos</a>
         <a href="#" class="btn">Alterar Senha</a>
-        <a href="/SiteAcademia/Index e Login/index.html" class="btn voltar">Voltar ao Início</a>
+        <a href="../index.html" class="btn voltar">Voltar ao Início</a>
       </div>
     </div>
   </main>
+
+  <!-- Seção: agendamentos do usuário -->
+  <section class="user-agendamentos fade-in-up">
+    <div class="container">
+      <h2>Meus Agendamentos</h2>
+      <?php if (empty($agendamentos)): ?>
+        <p>Você não possui agendamentos cadastrados.</p>
+      <?php else: ?>
+        <ul class="agendamentos-list">
+          <?php foreach ($agendamentos as $ag):
+            // Formata a data/hora para exibição
+            $dt = new DateTime($ag['data_hora']);
+            $str_dt = $dt->format('d/m/Y H:i');
+            $objetivo_ex = htmlspecialchars($ag['objetivo']);
+            $modalidade_ex = isset($ag['modalidade']) && $ag['modalidade'] !== null ? htmlspecialchars($ag['modalidade']) : '';
+            $status_ex = htmlspecialchars($ag['status_']);
+          ?>
+            <li class="agendamento-item">
+              <div class="ag-info">
+                <div class="ag-date"><?php echo $str_dt; ?></div>
+                <div class="ag-objetivo">Objetivo: <?php echo $objetivo_ex; ?></div>
+                <?php if ($modalidade_ex): ?>
+                  <div class="ag-modalidade">Modalidade: <?php echo $modalidade_ex; ?></div>
+                <?php endif; ?>
+                <div class="ag-status">Status: <?php echo $status_ex; ?></div>
+              </div>
+            </li>
+          <?php endforeach; ?>
+        </ul>
+      <?php endif; ?>
+    </div>
+  </section>
 
   <footer>
     <p>© 2025 TechFit — Todos os direitos reservados</p>
