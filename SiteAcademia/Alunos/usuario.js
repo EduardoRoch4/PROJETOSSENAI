@@ -1,14 +1,8 @@
-// Redireciona se não estiver logado
-if (localStorage.getItem('usuarioLogado') !== 'true') {
-  window.location.href = 'Login/login.php ';
+// Use server-side session (PHP) for auth; provide logout link to server endpoint.
+const logoutBtn = document.getElementById('logout');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.location.href = '/Login/login.php?acao=logout';
+  });
 }
-
-// Mostra nome do usuário
-document.getElementById('nome-usuario').textContent = localStorage.getItem('usuarioNome') || 'Usuário TechFit';
-
-// Logout
-document.getElementById('logout').addEventListener('click', () => {
-  localStorage.removeItem('usuarioLogado');
-  localStorage.removeItem('usuarioNome');
-  window.location.href = '../index.html';
-});

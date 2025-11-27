@@ -96,40 +96,71 @@ const perfilBtn = document.getElementById('perfil-btn');
 const loginSide = document.getElementById('login-side');
 const perfilSide = document.getElementById('perfil-side');
 
-function atualizarInterface() {
-  const logado = localStorage.getItem('usuarioLogado') === 'true';
-  if (logado) {
-    loginBtn.textContent = 'Logout';
-    loginSide.textContent = 'Logout';
-    loginBtn.href = '#';
-    loginSide.href = '#';
-    perfilBtn.style.display = 'inline-block';
-    perfilSide.style.display = 'inline-block';
-  } else {
-    loginBtn.textContent = 'Login';
-    loginSide.textContent = 'Login';
-    loginBtn.href = '../login.php';
-    loginSide.href = '../login.php';
-    perfilBtn.style.display = 'none';
-    perfilSide.style.display = 'none';
+async function atualizarInterface() {
+  try {
+    const r = await fetch('../Login/session_status.php');
+    const s = await r.json();
+    const isLogged = !!s.logged;
+    const perfil = s.perfil || null;
+    const userNameEl = document.getElementById('user-name');
+    const userDisplay = document.getElementById('user-display');
+    const userNameSide = document.getElementById('user-name-side');
+    const userDisplaySide = document.getElementById('user-display-side');
+
+    if (isLogged) {
+      loginBtn.textContent = 'Logout';
+      loginSide.textContent = 'Logout';
+      loginBtn.href = '/Login/login.php?acao=logout';
+      loginSide.href = '/Login/login.php?acao=logout';
+      perfilBtn.style.display = 'inline-block';
+      perfilSide.style.display = 'inline-block';
+    } else {
+      loginBtn.textContent = 'Login';
+      loginSide.textContent = 'Login';
+      loginBtn.href = '/Login/login.php';
+      loginSide.href = '/Login/login.php';
+      perfilBtn.style.display = 'none';
+      perfilSide.style.display = 'none';
+    }
+
+    function setAdminLinks(show) {
+      const nav = document.querySelector('.nav-buttons') || document.getElementById('nav-buttons');
+      if (nav) {
+        let a = nav.querySelector('a[data-admin-link]');
+        if (show && !a) {
+          a = document.createElement('a');
+          a.href = '/Admin/painel.php';
+          a.textContent = 'Painel Admin';
+          a.setAttribute('data-admin-link', '1');
+          nav.appendChild(a);
+        }
+        if (!show && a) a.remove();
+      }
+
+      const side = document.getElementById('side-menu') || document.querySelector('.side-menu');
+      if (side) {
+        let s = side.querySelector('a[data-admin-link-side]');
+        if (show && !s) {
+          s = document.createElement('a');
+          s.href = '/Admin/painel.php';
+          s.textContent = 'Painel Admin';
+          s.setAttribute('data-admin-link-side', '1');
+          side.appendChild(s);
+        }
+        if (!show && s) s.remove();
+      }
+    }
+
+    setAdminLinks(perfil === 'admin');
+    if (userNameEl) userNameEl.textContent = s.usuario || '';
+    if (userDisplay) userDisplay.style.display = isLogged ? '' : 'none';
+    if (userNameSide) userNameSide.textContent = s.usuario || '';
+    if (userDisplaySide) userDisplaySide.style.display = isLogged ? '' : 'none';
+
+  } catch (e) {
+    console.warn('session check error', e);
   }
 }
-
-loginBtn.addEventListener('click', () => {
-  if (loginBtn.textContent === 'Logout') {
-    localStorage.removeItem('usuarioLogado');
-    atualizarInterface();
-  }
-});
-
-loginSide.addEventListener('click', () => {
-  if (loginSide.textContent === 'Logout') {
-    localStorage.removeItem('usuarioLogado');
-    atualizarInterface();
-    sideMenu.classList.remove('active');
-    overlay.classList.remove('show');
-  }
-});
 
 atualizarInterface();
 

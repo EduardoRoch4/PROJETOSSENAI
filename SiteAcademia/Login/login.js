@@ -18,39 +18,8 @@ const formLogin = document.getElementById('form-login');
       msg.textContent = '';
     });
 
-    document.getElementById('btn-cadastrar').addEventListener('click', () => {
-      const usuario = document.getElementById('cadastro-usuario').value;
-      const senha = document.getElementById('cadastro-senha').value;
-      if (usuario && senha) {
-        localStorage.setItem('usuario', usuario);
-        localStorage.setItem('senha', senha);
-        msg.textContent = '✅ Cadastro realizado com sucesso!';
-        msg.style.color = 'green';
-        setTimeout(() => {
-          formCadastro.style.display = 'none';
-          formLogin.style.display = 'block';
-          msg.textContent = '';
-        }, 1500);
-      } else {
-        msg.textContent = 'Preencha todos os campos.';
-        msg.style.color = 'red';
-      }
-    });
-
-    document.getElementById('btn-login').addEventListener('click', () => {
-      const usuario = document.getElementById('login-usuario').value;
-      const senha = document.getElementById('login-senha').value;
-      const userCadastrado = localStorage.getItem('usuario');
-      const senhaCadastrada = localStorage.getItem('senha');
-      if (usuario === userCadastrado && senha === senhaCadastrada) {
-        localStorage.setItem('usuarioLogado', 'true');
-        localStorage.setItem('usuarioNome', usuario);
-        window.location.href = '../index.html';
-      } else {
-        msg.textContent = 'Usuário ou senha incorretos.';
-        msg.style.color = 'red';
-      }
-    });
+    // Registration and login are handled by the server-side PHP in login.php.
+    // This script is only responsible for toggling the login / register forms.
 
     document.getElementById('btn-voltar').addEventListener('click', () => window.location.href = '../index.html');
     document.getElementById('btn-voltar2').addEventListener('click', () => window.location.href = '../index.html');

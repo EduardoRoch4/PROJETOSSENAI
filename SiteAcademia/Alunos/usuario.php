@@ -114,7 +114,8 @@ $matricula = '#' . str_pad($id_usuario, 6, '0', STR_PAD_LEFT);
       <a href="../Unidades/Unidades.html">Unidades</a>
       <a href="../Nossa História/nos.html">Sobre Nós</a>
       
-      <a href="usuario?acao=logout" id="logout">Logout</a>
+      <a href="/Login/login.php?acao=logout" id="logout">Logout</a>
+      <span id="user-display" style="display:inline-block;margin-left:12px;color:#111">Olá, <strong id="user-name"><?php echo htmlspecialchars($_SESSION['usuario'] ?? ''); ?></strong></span>
     </nav>
   </header>
 

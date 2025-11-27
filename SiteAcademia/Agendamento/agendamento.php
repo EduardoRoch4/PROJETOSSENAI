@@ -32,11 +32,14 @@ $id_usuario_logado = $_SESSION['id_usuario'];
       <a href="/Agendamento/agendamento.php">Agendamento</a>
       <a href="/Unidades/Unidades.html">Unidades</a>
       <a href="/Chat/chat.html">Chat</a>
-      <a href="/Admin/painel.php">Painel Admin</a>
+      <?php if (isset($_SESSION['perfil']) && $_SESSION['perfil'] === 'admin'): ?>
+        <a href="/Admin/painel.php">Painel Admin</a>
+      <?php endif; ?>
       <a href="/Nossa História/nos.html">Sobre Nós</a>
       
       <a href="/Alunos/usuario.php" id="perfil-btn">Perfil</a>
-      <a href="/Alunos/usuario.php?acao=logout" id="logout-btn">Logout</a>
+      <a href="/Login/login.php?acao=logout" id="logout-btn">Logout</a>
+      <span id="user-display" style="margin-left:12px;color:#fff;">Olá, <strong id="user-name"><?php echo htmlspecialchars($_SESSION['usuario'] ?? ''); ?></strong></span>
     </nav>
 
     <div class="menu-icon" id="menu-icon">☰</div>
@@ -48,11 +51,14 @@ $id_usuario_logado = $_SESSION['id_usuario'];
     <a href="/Agendamento/agendamento.php">Agendamento</a>
     <a href="/Unidades/Unidades.html">Unidades</a>
     <a href="/Chat/chat.html">Chat</a>
-    <a href="/Admin/painel.php">Painel Admin</a>
+    <?php if (isset($_SESSION['perfil']) && $_SESSION['perfil'] === 'admin'): ?>
+      <a href="/Admin/painel.php">Painel Admin</a>
+    <?php endif; ?>
     <a href="/Nossa História/nos.html">Sobre Nós</a>
     
     <a href="/Alunos/usuario.php" id="perfil-side">Perfil</a>
-    <a href="/Alunos/usuario.php?acao=logout" id="logout-side">Logout</a>
+    <a href="/Login/login.php?acao=logout" id="logout-side">Logout</a>
+    <span id="user-display-side" style="margin-left:8px;color:#111">Olá, <strong id="user-name-side"><?php echo htmlspecialchars($_SESSION['usuario'] ?? ''); ?></strong></span>
   </div>
 
   <div class="overlay" id="overlay"></div>

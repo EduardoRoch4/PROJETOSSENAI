@@ -1,4 +1,5 @@
 <?php
+session_start();
 
 // Conexão com o banco
 $host = "localhost";
@@ -54,8 +55,9 @@ $conn->close();
       <a href="../index.html">Início</a>
       <a href="../Unidades/Unidades.html">Unidades</a>
       <a href="../Chat/chat.html">Chat</a>
-      <a href="../Admin/painel.php">Painel Admin</a>
+      <!-- Admin link will be added dynamically for admin users -->
       <a href="../Nossa História/nos.html">Sobre Nós</a>
+      <span id="user-display" style="display:none;margin-left:12px;color:#111">Olá, <strong id="user-name"></strong></span>
     </nav>
   </header>
 
@@ -116,6 +118,32 @@ $conn->close();
   </footer>
 
   <script>
+    // Add admin menu item only for admins
+    (async function(){
+      try {
+        const r = await fetch('../Login/session_status.php');
+        const s = await r.json();
+        // populate logged-in username if present
+        const uName = s.usuario || '';
+        if (uName) {
+          const userEl = document.getElementById('user-name');
+          const userWrap = document.getElementById('user-display');
+          if (userEl) userEl.textContent = uName;
+          if (userWrap) userWrap.style.display = '';
+        }
+
+        if (s.perfil === 'admin') {
+          const nav = document.querySelector('.nav-buttons');
+          if (nav && !nav.querySelector('a[data-admin-link]')) {
+            const a = document.createElement('a');
+            a.href = '../Admin/painel.php';
+            a.textContent = 'Painel Admin';
+            a.setAttribute('data-admin-link','1');
+            nav.appendChild(a);
+          }
+        }
+      } catch(e){ console.warn('session check failed', e); }
+    })();
     // Simula a confirmação do pagamento
     document.querySelector('.pagamento-form').addEventListener('submit', function(e) {
       e.preventDefault();

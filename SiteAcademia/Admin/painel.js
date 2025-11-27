@@ -48,40 +48,41 @@ const perfilBtn = document.getElementById('perfil-btn');
 const loginSide = document.getElementById('login-side');
 const perfilSide = document.getElementById('perfil-side');
 
-function atualizarInterface() {
-  const logado = localStorage.getItem('usuarioLogado') === 'true';
-  if (logado) {
-    loginBtn.textContent = 'Logout';
-    loginSide.textContent = 'Logout';
-    loginBtn.href = '#';
-    loginSide.href = '#';
-    perfilBtn.style.display = 'inline-block';
-    perfilSide.style.display = 'inline-block';
-  } else {
-    loginBtn.textContent = 'Login';
-    loginSide.textContent = 'Login';
-    loginBtn.href = '../login.php';
-    loginSide.href = '../login.php';
-    perfilBtn.style.display = 'none';
-    perfilSide.style.display = 'none';
+async function atualizarInterface() {
+  try {
+    const r = await fetch('../Login/session_status.php');
+    const s = await r.json();
+    const isLogged = !!s.logged;
+    const perfil = s.perfil || null;
+
+    if (isLogged) {
+      loginBtn.textContent = 'Logout';
+      loginSide.textContent = 'Logout';
+      loginBtn.href = '/Login/login.php?acao=logout';
+      loginSide.href = '/Login/login.php?acao=logout';
+      perfilBtn.style.display = 'inline-block';
+      perfilSide.style.display = 'inline-block';
+      const userNameEl = document.getElementById('user-name');
+      const userDisplay = document.getElementById('user-display');
+      if (userNameEl) userNameEl.textContent = s.usuario || '';
+      if (userDisplay) userDisplay.style.display = isLogged ? '' : 'none';
+    } else {
+      loginBtn.textContent = 'Login';
+      loginSide.textContent = 'Login';
+      loginBtn.href = '/Login/login.php';
+      loginSide.href = '/Login/login.php';
+      perfilBtn.style.display = 'none';
+      perfilSide.style.display = 'none';
+    }
+
+    // hide non-admin features for non-admins
+    const adminLinks = document.querySelectorAll('a[href*="/Admin/painel.php"], a[href*="Admin/admin.html"], a[href*="/Admin/"]');
+    adminLinks.forEach(a => a.style.display = (perfil === 'admin') ? '' : 'none');
+
+  } catch (err) {
+    console.warn('session check error', err);
   }
 }
-
-loginBtn.addEventListener('click', () => {
-  if (loginBtn.textContent === 'Logout') {
-    localStorage.removeItem('usuarioLogado');
-    atualizarInterface();
-  }
-});
-
-loginSide.addEventListener('click', () => {
-  if (loginSide.textContent === 'Logout') {
-    localStorage.removeItem('usuarioLogado');
-    atualizarInterface();
-    sideMenu.classList.remove('active');
-    overlay.classList.remove('show');
-  }
-});
 
 atualizarInterface();
 

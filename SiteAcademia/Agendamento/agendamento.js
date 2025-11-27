@@ -147,3 +147,76 @@ const fadeElements = document.querySelectorAll('.fade-in-up');
       });
     }, { threshold: 0.2 });
     fadeElements.forEach(el => observer.observe(el));
+
+// --- Atualiza UI de sessão (perfil, login/logout, mostrar/ocultar Painel Admin) ---
+async function refreshSessionUI() {
+  try {
+    const r = await fetch('../Login/session_status.php');
+    const s = await r.json();
+    const isLogged = !!s.logged;
+    const perfil = s.perfil || null;
+
+    const loginBtn = document.getElementById('login-btn');
+    const perfilBtn = document.getElementById('perfil-btn');
+    const loginSide = document.getElementById('login-side');
+    const perfilSide = document.getElementById('perfil-side');
+
+    if (loginBtn) {
+      loginBtn.href = isLogged ? '/Login/login.php?acao=logout' : '/Login/login.php';
+      loginBtn.textContent = isLogged ? 'Logout' : 'Login';
+    }
+    if (loginSide) {
+      loginSide.href = isLogged ? '/Login/login.php?acao=logout' : '/Login/login.php';
+      loginSide.textContent = isLogged ? 'Logout' : 'Login';
+    }
+
+    if (perfilBtn) perfilBtn.style.display = isLogged ? '' : 'none';
+    if (perfilSide) perfilSide.style.display = isLogged ? '' : 'none';
+
+    // show logged user name
+    const userNameEl = document.getElementById('user-name');
+    const userDisplay = document.getElementById('user-display');
+    const userNameSide = document.getElementById('user-name-side');
+    const userDisplaySide = document.getElementById('user-display-side');
+    if (userNameEl) userNameEl.textContent = s.usuario || '';
+    if (userDisplay) userDisplay.style.display = isLogged ? '' : 'none';
+    if (userNameSide) userNameSide.textContent = s.usuario || '';
+    if (userDisplaySide) userDisplaySide.style.display = isLogged ? '' : 'none';
+
+    // Inject/remove admin links so only admins see the button
+    function setAdminLinks(show) {
+      const nav = document.querySelector('.nav-buttons') || document.getElementById('nav-buttons');
+      if (nav) {
+        let a = nav.querySelector('a[data-admin-link]');
+        if (show && !a) {
+          a = document.createElement('a');
+          a.href = '/Admin/painel.php';
+          a.textContent = 'Painel Admin';
+          a.setAttribute('data-admin-link', '1');
+          nav.appendChild(a);
+        }
+        if (!show && a) a.remove();
+      }
+
+      const side = document.getElementById('side-menu') || document.querySelector('.side-menu');
+      if (side) {
+        let s = side.querySelector('a[data-admin-link-side]');
+        if (show && !s) {
+          s = document.createElement('a');
+          s.href = '/Admin/painel.php';
+          s.textContent = 'Painel Admin';
+          s.setAttribute('data-admin-link-side', '1');
+          side.appendChild(s);
+        }
+        if (!show && s) s.remove();
+      }
+    }
+
+    setAdminLinks(perfil === 'admin');
+
+  } catch (err) {
+    console.warn('session check failed', err);
+  }
+}
+
+refreshSessionUI();

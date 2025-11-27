@@ -31,6 +31,7 @@ $adminName = isset($_SESSION['usuario']) ? htmlspecialchars($_SESSION['usuario']
       <a href="../Nossa História/nos.html">Sobre Nós</a>
       <a href="/Alunos/usuario.php" id="perfil-btn" style="display:none;">Perfil</a>
       <a href="/Login/login.php" id="login-btn">Login</a>
+      <span id="user-display" style="display:none;margin-left:12px;color:#fff;">Olá, <strong id="user-name"><?php echo htmlspecialchars($adminName); ?></strong></span>
     </nav>
 
     <div class="menu-icon" id="menu-icon">☰</div>

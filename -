@@ -19,17 +19,10 @@
       <a href="Agendamento/Agendamento.html">Agendamento</a>
       <a href="Unidades/Unidades.html">Unidades</a>
       <a href="Chat/chat.html">Chat</a>
+      <a href="Admin/painel.php">Painel Admin</a>
       <a href="Nossa História/nos.html">Sobre Nós</a>
-
       <a href="Alunos/usuario.php" id="perfil-btn" style="display:none;">Perfil</a>
       <a href="Login/login.php" id="login-btn">Login</a>
-
-      <!-- ADICIONADO -->
-      <a href="#" id="logout-btn" style="display:none;">Logout</a>
-
-      <span id="user-display" style="display:none;margin-left:12px;color:#fff;">
-        Olá, <strong id="user-name"></strong>
-      </span>
     </nav>
 
     <div class="menu-icon" id="menu-icon">☰</div>
@@ -37,21 +30,13 @@
 
   <div class="side-menu" id="side-menu">
     <div class="close-btn" id="close-btn">✖</div>
-
     <a href="Agendamento/Agendamento.html">Agendamento</a>
     <a href="Unidades/Unidades.html">Unidades</a>
     <a href="Chat/chat.html">Chat</a>
+    <a href="Admin/painel.php">Painel Admin</a>
     <a href="Nossa História/nos.html">Sobre Nós</a>
-
     <a href="Alunos/usuario.php" id="perfil-side" style="display:none;">Perfil</a>
     <a href="Login/login.php" id="login-side">Login</a>
-
-    <!-- ADICIONADO -->
-    <a href="#" id="logout-side" style="display:none;">Logout</a>
-
-    <span id="user-display-side" style="display:none;margin-left:8px;color:#111">
-      Olá, <strong id="user-name-side"></strong>
-    </span>
   </div>
 
   <section class="banner-container fade-in-up">

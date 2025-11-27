@@ -22,8 +22,7 @@ if ($conn->connect_error) {
 
 $mensagem = "";
 
-// Código secreto para criação pública de contas administrativas (mude em produção)
-$ADMIN_CREATION_CODE = 'techfit-admin-2025';
+// Admin creation is only allowed by logged-in admins. Removed public secret-code creation path.
 
 // ====== CADASTRO DE USUÁRIO ======
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['tipo']) && $_POST['tipo'] === 'cadastro') {
@@ -33,36 +32,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['tipo']) && $_POST['ti
     $perfil = $_POST['perfil'] ?? 'aluno';
     $perfil = in_array($perfil, ['aluno','admin']) ? $perfil : 'aluno';
 
-    // Se a inscrição pede perfil admin, só permitimos quando:
-    //  - o usuário logado é admin (criação por admin), OU
-    //  - o código secreto de criação de admin é fornecido e corresponde
-    $permit_create_admin = false;
-    if ($perfil === 'admin') {
-      // Usuário logado com perfil admin pode criar administradores
-      if (isset($_SESSION['perfil']) && $_SESSION['perfil'] === 'admin') {
-        $permit_create_admin = true;
-      } else {
-        // Verifica código de criação enviado pelo formulário
-        $codigo_admin = trim($_POST['codigo_admin'] ?? '');
-        if (!empty($codigo_admin) && $codigo_admin === $ADMIN_CREATION_CODE) {
-          $permit_create_admin = true;
-        }
-      }
-    } else {
-      $permit_create_admin = true; // perfil 'aluno' sempre permitido
-    }
+    // Allow public registration of either profile (aluno or admin).
+    // The user requested both options at registration time.
+    $permit_create_admin = true;
 
     if (!empty($usuario) && !empty($senha)) {
         $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
 
         if (!$permit_create_admin) {
-          $mensagem = "❌ Você não tem permissão para criar uma conta administrativa (código inválido).";
+          $mensagem = "❌ Você não tem permissão para criar uma conta administrativa.";
         } else {
           $stmt = $conn->prepare("INSERT INTO usuarios (nome, email, senha, perfil) VALUES (?, ?, ?, ?)");
           $stmt->bind_param("ssss", $usuario, $usuario, $senhaHash, $perfil);
 
           if ($stmt->execute()) {
-            $mensagem = "✅ Usuário cadastrado com sucesso!";
+            // freshly created user - automatically log them in
+            $novo_id = $conn->insert_id;
+            $_SESSION['usuario'] = $usuario;
+            $_SESSION['id_usuario'] = $novo_id;
+            $_SESSION['perfil'] = $perfil;
+            // redirect based on perfil
+            if ($perfil === 'admin') {
+              header("Location: /Admin/painel.php");
+            } else {
+              header("Location: /Alunos/usuario.php");
+            }
+            exit;
           } else {
             if ($conn->errno == 1062) {
               $mensagem = "⚠️ Usuário já existe.";
@@ -162,12 +157,6 @@ $conn->close();
             <option value="aluno">Aluno</option>
             <option value="admin">Administrativo</option>
           </select>
-
-          <!-- Campo de código admin (aparece quando 'Administrativo' selecionado e usuário não é admin logado) -->
-          <div id="codigo-block" style="display:none; margin-bottom:8px;">
-            <label for="codigo_admin" style="display:block;margin:8px 0 4px;font-size:13px;">Código secreto para criar Administrador</label>
-            <input type="text" name="codigo_admin" id="codigo_admin" placeholder="Código administrativo (obrigatório para criar admin)" style="padding:8px;border-radius:6px;">
-          </div>
           <button type="submit" id="btn-cadastrar">Cadastrar</button>
         </form>
         <p>Já tem conta? <a href="#" id="mostrar-login">Voltar ao login</a></p>
@@ -180,32 +169,8 @@ $conn->close();
     const formLogin = document.getElementById('form-login');
     const formCadastro = document.getElementById('form-cadastro');
 
-    // Mostrar/ocultar campo de código admin conforme seleção de perfil
-    const perfilSelect = document.getElementById('perfil');
-    const codigoBlock = document.getElementById('codigo-block');
-    const codigoInput = document.getElementById('codigo_admin');
-
-    function toggleCodigo() {
-      if (!perfilSelect) return;
-      const selected = perfilSelect.value;
-      // Se selecionou admin e não está logado como admin, mostramos o campo e tornamos requerido
-      const isAdminSelected = (selected === 'admin');
-      // If session profile is admin, we don't need the code input (server will allow creation)
-      const isLoggedAdmin = <?php echo (isset($_SESSION['perfil']) && $_SESSION['perfil'] === 'admin') ? 'true' : 'false'; ?>;
-      if (isAdminSelected && !isLoggedAdmin) {
-        codigoBlock.style.display = 'block';
-        codigoInput.required = true;
-      } else {
-        codigoBlock.style.display = 'none';
-        if (codigoInput) codigoInput.required = false;
-      }
-    }
-
-    if (perfilSelect) {
-      perfilSelect.addEventListener('change', toggleCodigo);
-      // Initialize on load
-      toggleCodigo();
-    }
+    // No special JS needed for profile selection anymore — admin option only appears
+    // when a logged-in admin is present (rendered by server).
 
     document.getElementById('mostrar-cadastro').onclick = () => {
       formLogin.style.display = 'none';
