@@ -4,7 +4,7 @@ session_start();
 // Conexão com o banco
 $host = "localhost";
 $user = "root";  // ajuste seu usuário
-$pass = "senaisp";      // ajuste sua senha
+$pass = "1234";      // ajuste sua senha
 $db   = "Techfit";
 
 $conn = new mysqli($host, $user, $pass, $db);
@@ -12,24 +12,46 @@ if ($conn->connect_error) {
     die("Conexão falhou: " . $conn->connect_error);
 }
 
+// Obter ID do usuário da sessão
+$id_usuario = isset($_SESSION['id_usuario']) ? intval($_SESSION['id_usuario']) : 0;
+
 // Inserção do pagamento
 $mensagem = "";
+$tipo_mensagem = ""; // "sucesso" ou "erro"
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id_usuario = intval($_POST['id_usuario']); // idealmente viriam do login
-    $plano      = $_POST['plano'];
-    $valor      = floatval($_POST['valor']);
-    $status     = 'Pago';
-
-    $stmt = $conn->prepare("INSERT INTO pagamentos (id_usuario, plano, valor, status) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("isds", $id_usuario, $plano, $valor, $status);
-
-    if ($stmt->execute()) {
-        $mensagem = "✅ Pagamento registrado com sucesso!";
+    $plano_input = strtoupper($_POST['plano']);
+    
+    // Mapear valores dos planos
+    $planos = [
+        'BLACK' => 149.90,
+        'TECH' => 119.90,
+        'FIT' => 99.90
+    ];
+    
+    $valor = isset($planos[$plano_input]) ? $planos[$plano_input] : 0;
+    
+    if ($id_usuario <= 0) {
+        $mensagem = "❌ Usuário não autenticado. Faça login primeiro!";
+        $tipo_mensagem = "erro";
+    } elseif ($valor <= 0) {
+        $mensagem = "❌ Plano inválido!";
+        $tipo_mensagem = "erro";
     } else {
-        $mensagem = "❌ Erro ao registrar pagamento: " . $stmt->error;
-    }
+        $status = 'Pago';
+        $stmt = $conn->prepare("INSERT INTO pagamentos (id_usuario, plano, valor, status) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("isds", $id_usuario, $plano_input, $valor, $status);
 
-    $stmt->close();
+        if ($stmt->execute()) {
+            $mensagem = "✅ Pagamento registrado com sucesso!";
+            $tipo_mensagem = "sucesso";
+        } else {
+            $mensagem = "❌ Erro ao registrar pagamento: " . $stmt->error;
+            $tipo_mensagem = "erro";
+        }
+
+        $stmt->close();
+    }
 }
 $conn->close();
 ?>
@@ -41,7 +63,7 @@ $conn->close();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pagamento | TechFit</title>
-  <link rel="stylesheet" type = "text/css" href="../PAGAMENTOS/pagamentos.css">
+  <link rel="stylesheet" type = "text/css" href="pagamentos.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 
@@ -66,14 +88,27 @@ $conn->close();
       <h1>Finalizar Pagamento</h1>
       <p>Escolha sua forma de pagamento e garanta seu plano TechFit 💪</p>
 
-      <form class="pagamento-form" action="#" method="POST">
+      <?php if ($mensagem): ?>
+        <div class="mensagem <?php echo $tipo_mensagem; ?>" style="
+          padding: 15px; 
+          margin: 20px 0; 
+          border-radius: 8px; 
+          font-weight: bold;
+          font-size: 16px;
+          <?php echo ($tipo_mensagem === 'sucesso') ? 'background-color: #d4edda; color: #155724; border: 2px solid #28a745;' : 'background-color: #f8d7da; color: #721c24; border: 2px solid #f5c6cb;'; ?>
+        ">
+          <?php echo $mensagem; ?>
+        </div>
+      <?php endif; ?>
+
+      <form class="pagamento-form" method="POST">
         <div class="form-group">
           <label for="plano">Plano selecionado:</label>
           <select id="plano" name="plano" required>
             <option value="">Selecione...</option>
-            <option value="black">Plano Black — R$ 149,90</option>
-            <option value="tech">Plano Tech — R$ 119,90</option>
-            <option value="fit">Plano Fit — R$ 99,90</option>
+            <option value="BLACK">Plano Black — R$ 149,90</option>
+            <option value="TECH">Plano Tech — R$ 119,90</option>
+            <option value="FIT">Plano Fit — R$ 99,90</option>
           </select>
         </div>
 
@@ -144,12 +179,14 @@ $conn->close();
         }
       } catch(e){ console.warn('session check failed', e); }
     })();
-    // Simula a confirmação do pagamento
-    document.querySelector('.pagamento-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      alert("✅ Pagamento confirmado com sucesso!\nBem-vindo(a) à TechFit!");
-      window.location.href = "/Alunos/usuario.php";
-    });
+
+    // Redirecionar após sucesso do pagamento
+    <?php if ($tipo_mensagem === 'sucesso'): ?>
+      setTimeout(function() {
+        alert("✅ Pagamento confirmado com sucesso!\nBem-vindo(a) à TechFit!");
+        window.location.href = "../Alunos/usuario.php";
+      }, 1500);
+    <?php endif; ?>
   </script>
 </body>
 </html>

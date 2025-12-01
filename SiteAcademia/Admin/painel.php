@@ -24,13 +24,13 @@ $adminName = isset($_SESSION['usuario']) ? htmlspecialchars($_SESSION['usuario']
 
     <nav class="nav-buttons" id="nav-buttons">
       <a href="../index.html">Início</a>
-      <a href="Agendamento.html">Agendamento</a>
+      <a href="../Agendamento/Agendamento.html">Agendamento</a>
       <a href="../Unidades/Unidades.html">Unidades</a>
       <a href="../Chat/chat.html">Chat</a>
-      <a href="../Admin/admin.html">Painel Admin</a>
+      <a href="../Admin/painel.php">Painel Admin</a>
       <a href="../Nossa História/nos.html">Sobre Nós</a>
-      <a href="/Alunos/usuario.php" id="perfil-btn" style="display:none;">Perfil</a>
-      <a href="/Login/login.php" id="login-btn">Login</a>
+      <a href="../Alunos/usuario.php" id="perfil-btn" style="display:none;">Perfil</a>
+      <a href="../Login/login.php" id="login-btn">Login</a>
       <span id="user-display" style="display:none;margin-left:12px;color:#fff;">Olá, <strong id="user-name"><?php echo htmlspecialchars($adminName); ?></strong></span>
     </nav>
 
@@ -40,13 +40,13 @@ $adminName = isset($_SESSION['usuario']) ? htmlspecialchars($_SESSION['usuario']
   <div class="side-menu" id="side-menu">
     <div class="close-btn" id="close-btn">✖</div>
       <a href="../index.html">Início</a>
-      <a href="Agendamento.html">Agendamento</a>
+      <a href="../Agendamento/Agendamento.html">Agendamento</a>
       <a href="../Unidades/Unidades.html">Unidades</a>
       <a href="../Chat/chat.html">Chat</a>
-      <a href="../Admin/admin.html">Painel Admin</a>
+      <a href="../Admin/painel.php">Painel Admin</a>
       <a href="../Nossa História/nos.html">Sobre Nós</a>
-      <a href="/Alunos/usuario.php" id="perfil-btn" style="display:none">Perfil</a>
-      <a href="/Login/login.php" id="login-btn">Login</a>
+      <a href="../Alunos/usuario.php" id="perfil-btn" style="display:none">Perfil</a>
+      <a href="../Login/login.php" id="login-btn">Login</a>
   </div>
 
   <div class="overlay" id="overlay"></div>

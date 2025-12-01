@@ -12,7 +12,7 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'logout') {
 // ====== CONEXÃO COM O BANCO ======
 $host = "localhost";
 $user = "root";
-$pass = "senaisp";
+$pass = "1234";
 $db   = "Techfit";
 
 $conn = new mysqli($host, $user, $pass, $db);
@@ -114,6 +114,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['tipo']) && $_POST['ti
 }
 
 $conn->close();
+// ... (PHP code remains unchanged)
+
 ?>
 
 
@@ -123,18 +125,17 @@ $conn->close();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login | TechFit</title>
-  <link rel="stylesheet" type="text/css" href="../Login/login.css">
+  <link rel="stylesheet" type="text/css" href="login.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+  
   <div class="login-container">
     <div class="login-box">
       <h1>TechFit</h1>
 
-      <!-- Mensagem PHP -->
       <?php if(!empty($mensagem)) { echo "<p id='mensagem'>$mensagem</p>"; } ?>
 
-      <!-- ===== FORM LOGIN ===== -->
       <div id="form-login">
         <form method="POST" action="">
           <input type="hidden" name="tipo" value="login">
@@ -142,16 +143,17 @@ $conn->close();
           <input type="password" name="senha" id="login-senha" placeholder="Senha" required>
           <button type="submit" id="btn-login">Entrar</button>
         </form>
+        <button type="button" id="btn-voltar" class="btn-link" onclick="history.back()">
+          &larr; Voltar
+        </button>
         <p>Não tem conta? <a href="#" id="mostrar-cadastro">Cadastre-se</a></p>
       </div>
 
-      <!-- ===== FORM CADASTRO ===== -->
       <div id="form-cadastro" style="display:none;">
         <form method="POST" action="">
           <input type="hidden" name="tipo" value="cadastro">
           <input type="text" name="usuario" id="cadastro-usuario" placeholder="Crie um usuário" required>
           <input type="password" name="senha" id="cadastro-senha" placeholder="Crie uma senha" required>
-          <!-- Sempre exigir que usuário escolha perfil ao se cadastrar -->
           <label for="perfil" style="display:block;margin:8px 0 4px;font-size:14px;">Perfil</label>
           <select name="perfil" id="perfil" style="padding:8px;border-radius:6px;margin-bottom:8px;" required>
             <option value="aluno">Aluno</option>
@@ -168,9 +170,6 @@ $conn->close();
     // Alternar entre Login e Cadastro
     const formLogin = document.getElementById('form-login');
     const formCadastro = document.getElementById('form-cadastro');
-
-    // No special JS needed for profile selection anymore — admin option only appears
-    // when a logged-in admin is present (rendered by server).
 
     document.getElementById('mostrar-cadastro').onclick = () => {
       formLogin.style.display = 'none';

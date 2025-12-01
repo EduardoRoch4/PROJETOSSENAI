@@ -23,7 +23,7 @@ if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['usuario'])) {
 // (Mesma conexão do seu login.php)
 $host = "localhost";
 $user = "root";
-$pass = "senaisp";
+$pass = "1234";
 $db   = "Techfit";
 
 $conn = new mysqli($host, $user, $pass, $db);
@@ -114,7 +114,7 @@ $matricula = '#' . str_pad($id_usuario, 6, '0', STR_PAD_LEFT);
       <a href="../Unidades/Unidades.html">Unidades</a>
       <a href="../Nossa História/nos.html">Sobre Nós</a>
       
-      <a href="/Login/login.php?acao=logout" id="logout">Logout</a>
+      <a href="../Login/login.php?acao=logout" id="logout">Logout</a>
       <span id="user-display" style="display:inline-block;margin-left:12px;color:#111">Olá, <strong id="user-name"><?php echo htmlspecialchars($_SESSION['usuario'] ?? ''); ?></strong></span>
     </nav>
   </header>
@@ -136,9 +136,7 @@ $matricula = '#' . str_pad($id_usuario, 6, '0', STR_PAD_LEFT);
         <div class="info-row"><strong>Próximo Pagamento:</strong> <span><?php echo $proximo_pag; ?></span></div>
       </div>
       <div class="profile-actions">
-        <a href="#" class="btn">Editar Perfil</a>
         <a href="../Agendamento/Agendamento.html" class="btn">Agendamentos</a>
-        <a href="#" class="btn">Alterar Senha</a>
         <a href="../index.html" class="btn voltar">Voltar ao Início</a>
       </div>
     </div>

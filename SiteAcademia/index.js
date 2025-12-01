@@ -39,7 +39,7 @@ const logoutBtn = document.getElementById("logout-btn");
 // 🔥 FUNÇÃO GLOBAL DE LOGOUT
 function fazerLogout(e) {
   if (e) e.preventDefault();
-  window.location.href = "/Login/login.php?acao=logout";
+  window.location.href = "Login/login.php?acao=logout";
 }
 
 // Aplicar logout ao botão único
