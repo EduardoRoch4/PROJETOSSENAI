@@ -12,7 +12,7 @@ if (isset($_GET['acao']) && $_GET['acao'] === 'logout') {
 // ====== CONEXÃO COM O BANCO ======
 $host = "localhost";
 $user = "root";
-$pass = "1234";
+$pass = "senaisp";
 $db   = "Techfit";
 
 $conn = new mysqli($host, $user, $pass, $db);
@@ -76,10 +76,58 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['tipo']) && $_POST['ti
 
 // ====== LOGIN DE USUÁRIO ======
 if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['tipo']) && $_POST['tipo'] === 'login') {
-    $usuario = trim($_POST['usuario']);
-    $senha   = trim($_POST['senha']);
+    $usuario = isset($_POST['usuario']) ? trim($_POST['usuario']) : '';
+    $senha   = isset($_POST['senha']) ? trim($_POST['senha']) : '';
 
-      if (!empty($usuario) && !empty($senha)) {
+      // Se está tentando definir nova senha, processar isso primeiro
+      if (!empty($usuario) && isset($_POST['nova_senha']) && !empty($_POST['nova_senha'])) {
+        $stmt = $conn->prepare("SELECT id_usuario, nome, senha, perfil FROM usuarios WHERE nome = ?");
+        $stmt->bind_param("s", $usuario);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+
+        if ($resultado->num_rows > 0) {
+            $dados = $resultado->fetch_assoc();
+            $nova_senha = trim($_POST['nova_senha']);
+            $confirmar_senha = isset($_POST['confirmar_senha']) ? trim($_POST['confirmar_senha']) : '';
+            
+            if ($nova_senha !== $confirmar_senha) {
+                $mensagem = "❌ As senhas não coincidem!";
+                $mostrar_redefinir_senha = true;
+                $usuario_sem_senha = $dados['id_usuario'];
+            } elseif (strlen($nova_senha) < 4) {
+                $mensagem = "❌ A senha deve ter pelo menos 4 caracteres!";
+                $mostrar_redefinir_senha = true;
+                $usuario_sem_senha = $dados['id_usuario'];
+            } else {
+                // Definir nova senha
+                $senhaHash = password_hash($nova_senha, PASSWORD_DEFAULT);
+                $stmt_update = $conn->prepare("UPDATE usuarios SET senha = ? WHERE id_usuario = ?");
+                $stmt_update->bind_param("si", $senhaHash, $dados['id_usuario']);
+                
+                if ($stmt_update->execute()) {
+                    // Senha definida com sucesso, fazer login
+                    $_SESSION['usuario'] = $dados['nome'];
+                    $_SESSION['id_usuario'] = $dados['id_usuario'];
+                    $_SESSION['perfil'] = $dados['perfil'];
+                    if (isset($dados['perfil']) && $dados['perfil'] === 'admin') {
+                        header("Location: /Admin/painel.php");
+                    } else {
+                        header("Location: /Alunos/usuario.php");
+                    }
+                    exit;
+                } else {
+                    $mensagem = "❌ Erro ao definir senha. Tente novamente.";
+                    $mostrar_redefinir_senha = true;
+                    $usuario_sem_senha = $dados['id_usuario'];
+                }
+                $stmt_update->close();
+            }
+        } else {
+            $mensagem = "⚠️ Usuário não encontrado!";
+        }
+        $stmt->close();
+      } elseif (!empty($usuario) && !empty($senha)) {
         $stmt = $conn->prepare("SELECT id_usuario, nome, senha, perfil FROM usuarios WHERE nome = ?");
         $stmt->bind_param("s", $usuario);
         $stmt->execute();
@@ -88,22 +136,52 @@ if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST['tipo']) && $_POST['ti
         if ($resultado->num_rows > 0) {
             $dados = $resultado->fetch_assoc();
 
-            if (password_verify($senha, $dados['senha'])) {
-                // Login bem-sucedido
-                $_SESSION['usuario'] = $dados['nome'];
-                $_SESSION['id_usuario'] = $dados['id_usuario'];
-              // guarda o perfil do usuário na sessão
-              $_SESSION['perfil'] = $dados['perfil'];
-              // Redireciona para painel admin se for admin, senão envia para perfil
-              if (isset($dados['perfil']) && $dados['perfil'] === 'admin') {
-                header("Location: /Admin/painel.php");
-              } else {
-                header("Location: /Alunos/usuario.php");
-              }
-                exit;
-            } else {
-                $mensagem = "❌ Senha incorreta!";
-            }
+            // Verificar se a senha existe e não é null
+            if (isset($dados['senha']) && $dados['senha'] !== null && !empty($dados['senha'])) {
+                // Verificar se a senha está em hash (começa com $2y$ ou similar) ou é texto simples
+                if (password_verify($senha, $dados['senha'])) {
+                    // Login bem-sucedido
+                    $_SESSION['usuario'] = $dados['nome'];
+                    $_SESSION['id_usuario'] = $dados['id_usuario'];
+                    // guarda o perfil do usuário na sessão
+                    $_SESSION['perfil'] = $dados['perfil'];
+                    // Redireciona para painel admin se for admin, senão envia para perfil
+                    if (isset($dados['perfil']) && $dados['perfil'] === 'admin') {
+                        header("Location: /Admin/painel.php");
+                    } else {
+                        header("Location: /Alunos/usuario.php");
+                    }
+                    exit;
+                } else {
+                    // Verificar se é senha antiga em texto simples (para migração)
+                    if ($dados['senha'] === $senha) {
+                        // Senha antiga encontrada, atualizar para hash
+                        $senhaHash = password_hash($senha, PASSWORD_DEFAULT);
+                        $stmt_update = $conn->prepare("UPDATE usuarios SET senha = ? WHERE id_usuario = ?");
+                        $stmt_update->bind_param("si", $senhaHash, $dados['id_usuario']);
+                        $stmt_update->execute();
+                        $stmt_update->close();
+                        
+                        // Login bem-sucedido após atualização
+                        $_SESSION['usuario'] = $dados['nome'];
+                        $_SESSION['id_usuario'] = $dados['id_usuario'];
+                        $_SESSION['perfil'] = $dados['perfil'];
+                        if (isset($dados['perfil']) && $dados['perfil'] === 'admin') {
+                            header("Location: /Admin/painel.php");
+                        } else {
+                            header("Location: /Alunos/usuario.php");
+                        }
+                        exit;
+                    } else {
+                        $mensagem = "❌ Senha incorreta!";
+                    }
+                }
+                } else {
+                    // Senha não configurada - mostrar formulário para definir senha
+                    $mensagem = "🔐 Este usuário não possui senha configurada. Defina uma senha abaixo:";
+                    $mostrar_redefinir_senha = true;
+                    $usuario_sem_senha = $dados['id_usuario'];
+                }
         } else {
             $mensagem = "⚠️ Usuário não encontrado!";
         }
@@ -137,16 +215,28 @@ $conn->close();
       <?php if(!empty($mensagem)) { echo "<p id='mensagem'>$mensagem</p>"; } ?>
 
       <div id="form-login">
-        <form method="POST" action="">
-          <input type="hidden" name="tipo" value="login">
-          <input type="text" name="usuario" id="login-usuario" placeholder="Usuário" required>
-          <input type="password" name="senha" id="login-senha" placeholder="Senha" required>
-          <button type="submit" id="btn-login">Entrar</button>
-        </form>
+        <?php if (isset($mostrar_redefinir_senha) && $mostrar_redefinir_senha): ?>
+          <form method="POST" action="">
+            <input type="hidden" name="tipo" value="login">
+            <input type="hidden" name="usuario" value="<?php echo htmlspecialchars($usuario ?? ''); ?>">
+            <input type="password" name="nova_senha" id="nova-senha" placeholder="Defina sua senha" required minlength="4">
+            <input type="password" name="confirmar_senha" id="confirmar-senha" placeholder="Confirme sua senha" required minlength="4">
+            <button type="submit" id="btn-definir-senha">Definir Senha</button>
+          </form>
+        <?php else: ?>
+          <form method="POST" action="">
+            <input type="hidden" name="tipo" value="login">
+            <input type="text" name="usuario" id="login-usuario" placeholder="Usuário" required>
+            <input type="password" name="senha" id="login-senha" placeholder="Senha" required>
+            <button type="submit" id="btn-login">Entrar</button>
+          </form>
+        <?php endif; ?>
         <button type="button" id="btn-voltar" class="btn-link" onclick="history.back()">
           &larr; Voltar
         </button>
-        <p>Não tem conta? <a href="#" id="mostrar-cadastro">Cadastre-se</a></p>
+        <?php if (!isset($mostrar_redefinir_senha) || !$mostrar_redefinir_senha): ?>
+          <p>Não tem conta? <a href="#" id="mostrar-cadastro">Cadastre-se</a></p>
+        <?php endif; ?>
       </div>
 
       <div id="form-cadastro" style="display:none;">

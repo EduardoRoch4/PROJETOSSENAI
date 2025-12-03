@@ -47,7 +47,7 @@ try {
 // 5. CONECTAR AO BANCO E INSERIR
 $host = "localhost";
 $user = "root";
-$pass = "1234";
+$pass = "senaisp";
 $db   = "Techfit";
 
 $conn = new mysqli($host, $user, $pass, $db);

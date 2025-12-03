@@ -258,6 +258,28 @@ header {
   background-color: #ff4c4c;
 }
 
+.btn-voltar-inicio {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.btn-voltar-inicio:hover {
+  background-color: #357abd;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
 /* ===================== FOOTER ===================== */
 footer {
   background: #b30000;

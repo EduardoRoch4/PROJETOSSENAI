@@ -4,7 +4,7 @@ session_start();
 // Conexão com o banco
 $host = "localhost";
 $user = "root";  // ajuste seu usuário
-$pass = "1234";      // ajuste sua senha
+$pass = "senaisp";      // ajuste sua senha
 $db   = "Techfit";
 
 $conn = new mysqli($host, $user, $pass, $db);

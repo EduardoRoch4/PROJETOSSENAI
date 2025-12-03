@@ -5,22 +5,28 @@ const titulo = document.getElementById('modal-titulo');
 const texto = document.getElementById('modal-texto');
 
 function abrirModal(tipo) {
-  modal.style.display = 'flex';
-  if (tipo === 'alunos') {
-    titulo.textContent = 'Gerenciamento de Alunos';
-    texto.textContent = 'Aqui você poderá visualizar, cadastrar e editar informações dos alunos (em desenvolvimento).';
-  } else if (tipo === 'professores') {
-    titulo.textContent = 'Gerenciamento de Professores';
-    texto.textContent = 'Controle de dados de instrutores e turmas (em breve).';
-  } else if (tipo === 'relatorios') {
-    titulo.textContent = 'Relatórios Gerenciais';
-    texto.textContent = 'Visualize relatórios de presença, ocupação e desempenho (em breve).';
+  if (modal) {
+    modal.style.display = 'flex';
+    if (tipo === 'alunos') {
+      if (titulo) titulo.textContent = 'Gerenciamento de Alunos';
+      if (texto) texto.textContent = 'Aqui você poderá visualizar, cadastrar e editar informações dos alunos (em desenvolvimento).';
+    } else if (tipo === 'professores') {
+      if (titulo) titulo.textContent = 'Gerenciamento de Professores';
+      if (texto) texto.textContent = 'Controle de dados de instrutores e turmas (em breve).';
+    } else if (tipo === 'relatorios') {
+      if (titulo) titulo.textContent = 'Relatórios Gerenciais';
+      if (texto) texto.textContent = 'Visualize relatórios de presença, ocupação e desempenho (em breve).';
+    }
   }
 }
 
-close.addEventListener('click', () => modal.style.display = 'none');
+if (close) {
+  close.addEventListener('click', () => {
+    if (modal) modal.style.display = 'none';
+  });
+}
 window.addEventListener('click', (e) => {
-  if (e.target === modal) modal.style.display = 'none';
+  if (e.target === modal && modal) modal.style.display = 'none';
 });
 
 // 🟢 Menu lateral e overlay (igual ao index)
@@ -45,8 +51,6 @@ overlay.addEventListener('click', () => {
 // 🟢 Controle de login/logout
 const loginBtn = document.getElementById('login-btn');
 const perfilBtn = document.getElementById('perfil-btn');
-const loginSide = document.getElementById('login-side');
-const perfilSide = document.getElementById('perfil-side');
 
 async function atualizarInterface() {
   try {
@@ -56,23 +60,25 @@ async function atualizarInterface() {
     const perfil = s.perfil || null;
 
     if (isLogged) {
-      loginBtn.textContent = 'Logout';
-      loginSide.textContent = 'Logout';
-      loginBtn.href = '/Login/login.php?acao=logout';
-      loginSide.href = '/Login/login.php?acao=logout';
-      perfilBtn.style.display = 'inline-block';
-      perfilSide.style.display = 'inline-block';
+      if (loginBtn) {
+        loginBtn.textContent = 'Logout';
+        loginBtn.href = '/Login/login.php?acao=logout';
+      }
+      if (perfilBtn) {
+        perfilBtn.style.display = 'inline-block';
+      }
       const userNameEl = document.getElementById('user-name');
       const userDisplay = document.getElementById('user-display');
       if (userNameEl) userNameEl.textContent = s.usuario || '';
       if (userDisplay) userDisplay.style.display = isLogged ? '' : 'none';
     } else {
-      loginBtn.textContent = 'Login';
-      loginSide.textContent = 'Login';
-      loginBtn.href = '/Login/login.php';
-      loginSide.href = '/Login/login.php';
-      perfilBtn.style.display = 'none';
-      perfilSide.style.display = 'none';
+      if (loginBtn) {
+        loginBtn.textContent = 'Login';
+        loginBtn.href = '/Login/login.php';
+      }
+      if (perfilBtn) {
+        perfilBtn.style.display = 'none';
+      }
     }
 
     // hide non-admin features for non-admins

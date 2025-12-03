@@ -23,7 +23,7 @@ if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['usuario'])) {
 // (Mesma conexão do seu login.php)
 $host = "localhost";
 $user = "root";
-$pass = "1234";
+$pass = "senaisp";
 $db   = "Techfit";
 
 $conn = new mysqli($host, $user, $pass, $db);

@@ -6,13 +6,35 @@ if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'admin') {
     exit;
 }
 $adminName = isset($_SESSION['usuario']) ? htmlspecialchars($_SESSION['usuario']) : 'Admin';
+
+$host = "localhost";
+$user = "root";
+$pass = "senaisp";
+$db   = "Techfit";
+
+$conn = new mysqli($host, $user, $pass, $db);
+if ($conn->connect_error) {
+    die("Erro na conexão: " . $conn->connect_error);
+}
+
+// Buscar todos os alunos
+$alunos = [];
+$query = "SELECT id_usuario, nome, email FROM usuarios ORDER BY nome ASC";
+$result = $conn->query($query);
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $alunos[] = $row;
+    }
+}
+
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Administrativo | TechFit</title>
+  <title>Gerenciamento de Alunos | TechFit Admin</title>
   <link rel="stylesheet" href="painel.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -59,8 +81,8 @@ $adminName = isset($_SESSION['usuario']) ? htmlspecialchars($_SESSION['usuario']
       </div>
 
       <nav class="sidebar-nav">
-        <a class="active" href="painel.php">Visão Geral</a>
-        <a href="alunos.php">Alunos</a>
+        <a href="painel.php">Visão Geral</a>
+        <a class="active" href="alunos.php">Alunos</a>
         <a href="professores.php">Professores</a>
         <a href="aulas.php">Aulas</a>
         <a href="agendamentos.php">Agendamentos</a>
@@ -76,59 +98,63 @@ $adminName = isset($_SESSION['usuario']) ? htmlspecialchars($_SESSION['usuario']
     <main class="dashboard">
       <header class="dashboard-header">
         <div class="dash-title">
-          <h1>Visão Geral</h1>
-          <p class="muted">Resumo rápido do sistema e últimos agendamentos</p>
+          <h1>Gerenciamento de Alunos</h1>
+          <p class="muted">Visualize e edite informações dos alunos cadastrados</p>
         </div>
         <div class="dash-actions">
-          <input id="search-input" placeholder="Pesquisar..." />
-          <button class="btn small" id="novo-reg">+ Novo</button>
+          <input id="search-input" placeholder="Pesquisar aluno..." />
+          <button class="btn small" id="novo-aluno">+ Novo Aluno</button>
         </div>
       </header>
 
-      <section class="stats-grid">
-        <div class="stat card stat-users">
-          <div class="stat-value" id="count-users">—</div>
-          <div class="stat-label">Alunos</div>
-        </div>
-        <div class="stat card stat-teachers">
-          <div class="stat-value" id="count-teachers">—</div>
-          <div class="stat-label">Professores</div>
-        </div>
-        <div class="stat card stat-bookings">
-          <div class="stat-value" id="count-bookings">—</div>
-          <div class="stat-label">Agendamentos</div>
-        </div>
-        <div class="stat card stat-upcoming">
-          <div class="stat-value" id="count-upcoming">—</div>
-          <div class="stat-label">Agendamentos futuros</div>
-        </div>
-      </section>
-
       <section class="recent-section">
         <div class="section-header">
-          <h2>Agendamentos recentes</h2>
-          <small id="recent-note" class="muted">Carregando...</small>
+          <h2>Alunos Cadastrados</h2>
+          <small id="count-alunos" class="muted"><?php echo count($alunos); ?> alunos</small>
         </div>
         <div class="table-wrap">
           <table class="recent-table">
             <thead>
-              <tr><th>Data / Hora</th><th>Usuário</th><th>Objetivo</th><th>Modalidade</th><th>Status</th></tr>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Ações</th>
+              </tr>
             </thead>
-            <tbody id="recent-table-body">
-              <tr><td colspan="5" class="muted">Nenhum registro encontrado</td></tr>
+            <tbody id="alunos-table-body">
+              <?php if (empty($alunos)): ?>
+                <tr><td colspan="4" class="muted">Nenhum aluno encontrado</td></tr>
+              <?php else: ?>
+                <?php foreach ($alunos as $aluno): ?>
+                  <tr>
+                    <td>#<?php echo htmlspecialchars($aluno['id_usuario']); ?></td>
+                    <td><?php echo htmlspecialchars($aluno['nome']); ?></td>
+                    <td><?php echo htmlspecialchars($aluno['email']); ?></td>
+                    <td>
+                      <button class="btn-action editar" data-id="<?php echo htmlspecialchars($aluno['id_usuario']); ?>">Editar</button>
+                      <button class="btn-action deletar" data-id="<?php echo htmlspecialchars($aluno['id_usuario']); ?>">Deletar</button>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
             </tbody>
           </table>
         </div>
       </section>
-
     </main>
   </div>
 
   <div id="modal" class="modal">
     <div class="modal-content">
       <span class="close" id="close">&times;</span>
-      <h2 id="modal-titulo"></h2>
-      <p id="modal-texto"></p>
+      <h2 id="modal-titulo">Editar Aluno</h2>
+      <form id="form-aluno">
+        <input type="hidden" id="aluno-id">
+        <input type="text" id="aluno-nome" placeholder="Nome" required>
+        <input type="email" id="aluno-email" placeholder="Email" required>
+        <button type="submit" class="btn">Salvar</button>
+      </form>
     </div>
   </div>
 
@@ -136,6 +162,6 @@ $adminName = isset($_SESSION['usuario']) ? htmlspecialchars($_SESSION['usuario']
   <p>© 2025 TechFit — Todos os direitos reservados</p>
 </footer>
 
-  <script src="painel.js"></script>
+  <script src="admin.js"></script>
 </body>
 </html>

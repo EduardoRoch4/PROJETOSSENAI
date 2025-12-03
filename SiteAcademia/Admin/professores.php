@@ -6,13 +6,35 @@ if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'admin') {
     exit;
 }
 $adminName = isset($_SESSION['usuario']) ? htmlspecialchars($_SESSION['usuario']) : 'Admin';
+
+$host = "localhost";
+$user = "root";
+$pass = "senaisp";
+$db   = "Techfit";
+
+$conn = new mysqli($host, $user, $pass, $db);
+if ($conn->connect_error) {
+    die("Erro na conexão: " . $conn->connect_error);
+}
+
+// Buscar todos os professores
+$professores = [];
+$query = "SELECT id_professor, nome, email, especialidade FROM professor ORDER BY nome ASC";
+$result = $conn->query($query);
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $professores[] = $row;
+    }
+}
+
+$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Painel Administrativo | TechFit</title>
+  <title>Gerenciamento de Professores | TechFit Admin</title>
   <link rel="stylesheet" href="painel.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
@@ -59,9 +81,9 @@ $adminName = isset($_SESSION['usuario']) ? htmlspecialchars($_SESSION['usuario']
       </div>
 
       <nav class="sidebar-nav">
-        <a class="active" href="painel.php">Visão Geral</a>
+        <a href="painel.php">Visão Geral</a>
         <a href="alunos.php">Alunos</a>
-        <a href="professores.php">Professores</a>
+        <a class="active" href="professores.php">Professores</a>
         <a href="aulas.php">Aulas</a>
         <a href="agendamentos.php">Agendamentos</a>
         <a href="relatorios.php">Relatórios</a>
@@ -76,59 +98,66 @@ $adminName = isset($_SESSION['usuario']) ? htmlspecialchars($_SESSION['usuario']
     <main class="dashboard">
       <header class="dashboard-header">
         <div class="dash-title">
-          <h1>Visão Geral</h1>
-          <p class="muted">Resumo rápido do sistema e últimos agendamentos</p>
+          <h1>Gerenciamento de Professores</h1>
+          <p class="muted">Visualize e edite informações dos professores cadastrados</p>
         </div>
         <div class="dash-actions">
-          <input id="search-input" placeholder="Pesquisar..." />
-          <button class="btn small" id="novo-reg">+ Novo</button>
+          <input id="search-input" placeholder="Pesquisar professor..." />
+          <button class="btn small" id="novo-professor">+ Novo Professor</button>
         </div>
       </header>
 
-      <section class="stats-grid">
-        <div class="stat card stat-users">
-          <div class="stat-value" id="count-users">—</div>
-          <div class="stat-label">Alunos</div>
-        </div>
-        <div class="stat card stat-teachers">
-          <div class="stat-value" id="count-teachers">—</div>
-          <div class="stat-label">Professores</div>
-        </div>
-        <div class="stat card stat-bookings">
-          <div class="stat-value" id="count-bookings">—</div>
-          <div class="stat-label">Agendamentos</div>
-        </div>
-        <div class="stat card stat-upcoming">
-          <div class="stat-value" id="count-upcoming">—</div>
-          <div class="stat-label">Agendamentos futuros</div>
-        </div>
-      </section>
-
       <section class="recent-section">
         <div class="section-header">
-          <h2>Agendamentos recentes</h2>
-          <small id="recent-note" class="muted">Carregando...</small>
+          <h2>Professores Cadastrados</h2>
+          <small id="count-professores" class="muted"><?php echo count($professores); ?> professores</small>
         </div>
         <div class="table-wrap">
           <table class="recent-table">
             <thead>
-              <tr><th>Data / Hora</th><th>Usuário</th><th>Objetivo</th><th>Modalidade</th><th>Status</th></tr>
+              <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Email</th>
+                <th>Especialidade</th>
+                <th>Ações</th>
+              </tr>
             </thead>
-            <tbody id="recent-table-body">
-              <tr><td colspan="5" class="muted">Nenhum registro encontrado</td></tr>
+            <tbody id="professores-table-body">
+              <?php if (empty($professores)): ?>
+                <tr><td colspan="5" class="muted">Nenhum professor encontrado</td></tr>
+              <?php else: ?>
+                <?php foreach ($professores as $prof): ?>
+                  <tr>
+                    <td>#<?php echo htmlspecialchars($prof['id_professor']); ?></td>
+                    <td><?php echo htmlspecialchars($prof['nome']); ?></td>
+                    <td><?php echo htmlspecialchars($prof['email']); ?></td>
+                    <td><?php echo htmlspecialchars($prof['especialidade'] ?? '—'); ?></td>
+                    <td>
+                      <button class="btn-action editar" data-id="<?php echo htmlspecialchars($prof['id_professor']); ?>">Editar</button>
+                      <button class="btn-action deletar" data-id="<?php echo htmlspecialchars($prof['id_professor']); ?>">Deletar</button>
+                    </td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php endif; ?>
             </tbody>
           </table>
         </div>
       </section>
-
     </main>
   </div>
 
   <div id="modal" class="modal">
     <div class="modal-content">
       <span class="close" id="close">&times;</span>
-      <h2 id="modal-titulo"></h2>
-      <p id="modal-texto"></p>
+      <h2 id="modal-titulo">Editar Professor</h2>
+      <form id="form-professor">
+        <input type="hidden" id="professor-id">
+        <input type="text" id="professor-nome" placeholder="Nome" required>
+        <input type="email" id="professor-email" placeholder="Email" required>
+        <input type="text" id="professor-especialidade" placeholder="Especialidade">
+        <button type="submit" class="btn">Salvar</button>
+      </form>
     </div>
   </div>
 
@@ -136,6 +165,6 @@ $adminName = isset($_SESSION['usuario']) ? htmlspecialchars($_SESSION['usuario']
   <p>© 2025 TechFit — Todos os direitos reservados</p>
 </footer>
 
-  <script src="painel.js"></script>
+  <script src="admin.js"></script>
 </body>
 </html>

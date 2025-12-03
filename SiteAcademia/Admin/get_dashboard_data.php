@@ -11,7 +11,7 @@ if (!isset($_SESSION['perfil']) || $_SESSION['perfil'] !== 'admin') {
 
 $host = "localhost";
 $user = "root";
-$pass = "1234";
+$pass = "senaisp";
 $db   = "Techfit";
 
 $conn = new mysqli($host, $user, $pass, $db);

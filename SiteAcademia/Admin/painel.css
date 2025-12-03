@@ -210,15 +210,42 @@ body {
   color: #222;
   padding: 30px;
   border-radius: 15px;
-  max-width: 400px;
+  max-width: 500px;
   text-align: center;
   box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 .modal-content h2 {
   color: #b30000;
+  margin-bottom: 20px;
 }
 .modal-content p {
   margin-top: 15px;
+}
+.modal-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+.modal-content form input,
+.modal-content form textarea,
+.modal-content form select {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+}
+.modal-content form input:focus,
+.modal-content form textarea:focus,
+.modal-content form select:focus {
+  outline: none;
+  border-color: #b30000;
+  box-shadow: 0 0 6px rgba(179, 0, 0, 0.3);
+}
+.modal-content form textarea {
+  resize: vertical;
+  min-height: 80px;
 }
 
 /* ===== FOOTER ===== */
@@ -277,6 +304,61 @@ footer {
 .recent-table thead th { text-align:left; padding:10px; border-bottom:1px solid #eee; color:#555; }
 .recent-table tbody td { padding:10px; border-bottom:1px dashed #f0f0f0; color:#333; }
 .recent-table tbody tr:nth-child(even) { background:#fbfbfb; }
+.btn-action {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  margin-right: 4px;
+  transition: all 0.3s ease;
+}
+.btn-action.editar {
+  background: #6b8cff;
+  color: #fff;
+}
+.btn-action.editar:hover {
+  background: #4a6fdb;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(107, 140, 255, 0.3);
+}
+.btn-action.deletar {
+  background: #ff3b3b;
+  color: #fff;
+}
+.btn-action.deletar:hover {
+  background: #d40000;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(255, 59, 59, 0.3);
+}
+
+/* Estilo para gráficos */
+.charts-section {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  margin-bottom: 22px;
+}
+.chart-card {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.05);
+}
+.chart-card h3 {
+  color: #b30000;
+  margin-bottom: 14px;
+  font-size: 16px;
+}
+.chart-card canvas {
+  max-height: 300px;
+}
+
+/* Responsividade para gráficos */
+@media (max-width: 1200px) {
+  .charts-section { grid-template-columns: 1fr; }
+}
 
 /* Responsividade */
 @media (max-width: 900px) {
